@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "sync-app-dashboard",
+    "site": "sync-app-client",
     "public": "build",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   }
