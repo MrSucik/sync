@@ -5,3 +5,4 @@
 .eslintcache
 yarn-debug.log*
 yarn-error.log*
+firebase-debug.log

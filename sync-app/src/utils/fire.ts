@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
@@ -18,3 +19,13 @@ export const firestore = app.firestore();
 export const auth = app.auth();
 export const storage = app.storage();
 export const performance = app.performance();
+
+export const getDownloadURL = (fileName: string) =>
+  storage.ref(`/${fileName}`).getDownloadURL();
+
+export const uploadFile = async (file: File) => {
+  const fileName = uuidv4() + file.name;
+  const metadata = { contentType: file.type };
+  await storage.ref().child(fileName).put(file, metadata);
+  return fileName;
+};

@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, List, ListItemText } from "@material-ui/core";
+import { ListItemText } from "@material-ui/core";
 import ListItem from "../components/ListItem";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
@@ -10,13 +10,17 @@ import {
   setConfigureMediaModalOpen,
 } from "../store/slices/app";
 import { useSnackbar } from "notistack";
+import Avatar from "../components/Avatar";
 
-const MediaList = () => {
+interface Props {
+  media: MediaModel;
+}
+
+const MediaListItem: React.FC<Props> = ({
+  media: { color, duration, id, name, source, configurable },
+}) => {
   const scenes = useSelector<RootState, SceneModel[]>(
     (state) => state.firestore.ordered.scenes
-  );
-  const media = useSelector<RootState, MediaModel[]>(
-    (state) => state.firestore.ordered.media
   );
   const choosingScene = useSelector<RootState, string | null>(
     (state) => state.app.choosingScene
@@ -58,38 +62,31 @@ const MediaList = () => {
     dispatch(setConfigureMediaModalOpen(id));
   };
   return (
-    <List>
-      {media.map(({ id, name, duration, source, color, configurable }) => (
-        <ListItem
-          key={id}
-          onClick={choosingMediaSceneId ? () => handleClick(id) : undefined}
-          avatar={<Avatar alt={name} src={source} />}
-          body={
-            <ListItemText primary={name} secondary={`${duration} seconds`} />
-          }
-          color={color}
-          disabled={choosingMediaList.includes(id) || Boolean(choosingScene)}
-          actions={
-            configurable
-              ? [
-                  {
-                    icon: "settings",
-                    tooltip: "Configure this media",
-                    onClick: () => handleConfigureClick(id as any),
-                  },
-                ]
-              : [
-                  {
-                    icon: "delete",
-                    onClick: () => handleDeleteClick(id),
-                    tooltip: "Delete this media",
-                  },
-                ]
-          }
-        />
-      ))}
-    </List>
+    <ListItem
+      onClick={choosingMediaSceneId ? () => handleClick(id) : undefined}
+      avatar={<Avatar alt={name} source={source} />}
+      body={<ListItemText primary={name} secondary={`${duration} seconds`} />}
+      color={color}
+      disabled={choosingMediaList.includes(id) || Boolean(choosingScene)}
+      actions={
+        configurable
+          ? [
+              {
+                icon: "settings",
+                tooltip: "Configure this media",
+                onClick: () => handleConfigureClick(id as any),
+              },
+            ]
+          : [
+              {
+                icon: "delete",
+                onClick: () => handleDeleteClick(id),
+                tooltip: "Delete this media",
+              },
+            ]
+      }
+    />
   );
 };
 
-export default MediaList;
+export default MediaListItem;

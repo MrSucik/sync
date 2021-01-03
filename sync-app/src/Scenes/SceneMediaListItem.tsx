@@ -1,6 +1,7 @@
 import React from "react";
-import { Avatar, ListItemText } from "@material-ui/core";
+import { ListItemText } from "@material-ui/core";
 import ListItem from "../components/ListItem";
+import Avatar from "../components/Avatar";
 import { MediaModel } from "../definitions";
 import { Draggable } from "react-beautiful-dnd";
 
@@ -25,7 +26,7 @@ const SceneMediaListItem: React.FC<Props> = ({
         >
           <ListItem
             color={color}
-            avatar={<Avatar alt={name} src={source} />}
+            avatar={<Avatar alt={name} source={source} />}
             body={
               <ListItemText primary={name} secondary={`${duration} seconds`} />
             }

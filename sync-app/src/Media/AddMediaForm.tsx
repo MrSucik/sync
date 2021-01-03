@@ -13,7 +13,8 @@ import Button from "../components/Button";
 import { setAddMediaModalOpen } from "../store/slices/app";
 import { useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
-import { uploadFile } from "../utils/upload";
+import firebase from "firebase/app";
+import { uploadFile } from "../utils/fire";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -73,16 +74,17 @@ const AddMediaForm: React.FC = () => {
     setLoading(true);
     try {
       const file = acceptedFiles[0];
-      const downloadUrl = await uploadFile(file);
+      const remoteFileName = await uploadFile(file);
       await firestore.add(
         { collection: "media" },
         {
-          created: new Date(),
+          created: firebase.firestore.FieldValue.serverTimestamp(),
           color: "blue",
           duration: duration || 30,
           name: name || "New Media",
-          source: downloadUrl,
+          source: remoteFileName,
           type: "image",
+          ready: false,
         }
       );
       dispatch(setAddMediaModalOpen(false));
