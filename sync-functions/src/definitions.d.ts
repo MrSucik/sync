@@ -28,3 +28,8 @@ export interface ConfigurationModel {
   planDate: firestore.Timestamp;
   suplDate: firestore.Timestamp;
 }
+
+export interface ConversionResult {
+  name: string;
+  type: "image" | "video";
+}

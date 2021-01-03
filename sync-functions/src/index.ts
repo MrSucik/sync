@@ -2,7 +2,14 @@ import * as functions from "firebase-functions";
 import * as moment from "moment";
 import { initialize, getAvailableDates, scrapePlan, scrapeSupl } from "./baka";
 import { bakaSuplDatesRoute, bakaPlanDatesRoute } from "./constants";
-import { getConfiguration, updateBakaMedia, userExists } from "./utils";
+import {
+  app,
+  firestore,
+  getConfiguration,
+  processImage,
+  updateBakaMedia,
+  userExists,
+} from "./utils";
 
 export const scheduledBakaScraping = functions
   .region("europe-west3")
@@ -18,9 +25,9 @@ export const scheduledBakaScraping = functions
       : moment(configuration.suplDate.toDate()).add(1, "hour");
     const page = await initialize();
     functions.logger.log(configuration, planDate, suplDate);
-    const planUrl = await scrapePlan(page, moment(planDate));
-    const suplUrl = await scrapeSupl(page, moment(suplDate));
-    await updateBakaMedia(suplUrl, planUrl);
+    const planResult = await scrapePlan(page, moment(planDate));
+    const suplResult = await scrapeSupl(page, moment(suplDate));
+    await updateBakaMedia(suplResult, planResult);
   });
 
 const createAvailableDatesFunction = (url: string) =>
@@ -48,4 +55,49 @@ export const isAuthorized = functions
   .https.onRequest((request, response) => {
     const uid = request.headers["uid"];
     response.send(uid && typeof uid === "string" && userExists(uid));
+  });
+
+export const clientAccess = functions
+  .region("europe-west3")
+  .https.onRequest(async (request, response) => {
+    const clientId = request.query.clientId + "";
+    const { exists } = await firestore
+      .collection("clients")
+      .doc(clientId)
+      .get();
+    response.set("Access-Control-Allow-Origin", "*");
+    if (!exists) {
+      response.status(500).send("Invalid client ID");
+    } else {
+      const token = await app.auth().createCustomToken(clientId);
+      response.send(token);
+    }
+  });
+
+export const onClientStatusChanged = functions.database
+  .ref("/status/{uid}")
+  .onUpdate(async (change, context) => {
+    const eventStatus = change.after.val();
+    const userStatusFirestoreRef = firestore
+      .collection("clients")
+      .doc(context.params.uid);
+    const statusSnapshot = await change.after.ref.once("value");
+    const status = statusSnapshot.val();
+    return status.last_changed > eventStatus.last_changed
+      ? null
+      : userStatusFirestoreRef.update({ status: eventStatus.state });
+  });
+
+export const conversion = functions
+  .runWith({ memory: "4GB", timeoutSeconds: 300 })
+  .region("europe-west3")
+  .https.onRequest(async (request, response) => {
+    try {
+      const fileName = request.query.name as string;
+      const result = await processImage(fileName);
+      response.send(result);
+    } catch (error) {
+      functions.logger.error(error);
+      response.status(500).send(error);
+    }
   });

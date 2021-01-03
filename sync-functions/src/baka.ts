@@ -1,6 +1,6 @@
 import * as puppeteer from "puppeteer";
 import * as moment from "moment";
-import { uploadImage } from "./utils";
+import { processImage, tempFilePath } from "./utils";
 import { bakaSuplRoute, bakaSuffix, bakaPlanRoute } from "./constants";
 
 const removeNewLines = (input: string) => input.replace(/\r?\n|\r/g, "");
@@ -16,15 +16,22 @@ const defaultOptions = {
   },
 };
 
-const takeScreenshot = async (page: puppeteer.Page, html: string) => {
+const takeScreenshot = async (
+  page: puppeteer.Page,
+  html: string,
+  name: string
+) => {
+  const path = tempFilePath(name);
   await page.setContent(html);
   await page.addStyleTag({
     url:
       "https://firebasestorage.googleapis.com/v0/b/wigymtv.appspot.com/o/supl.css?alt=media&token=79ba43bd-2c8b-42d7-b368-34c2ad688150",
   });
-  return await page.screenshot({
+  await page.screenshot({
     fullPage: true,
+    path,
   });
+  return path;
 };
 
 export const initialize = async () => {
@@ -44,8 +51,9 @@ export const scrapeSupl = async (page: puppeteer.Page, date: moment.Moment) => {
       ? Promise.resolve(tables)
       : Promise.reject("Cannot find baka supl page!");
   });
-  const screenshot = await takeScreenshot(page, html);
-  return await uploadImage("bakalari-suplovani.png", screenshot);
+  const name = "bakalari-suplovani.png";
+  const localPath = await takeScreenshot(page, html, name);
+  return await processImage(localPath);
 };
 
 export const scrapePlan = async (page: puppeteer.Page, date: moment.Moment) => {
@@ -59,8 +67,9 @@ export const scrapePlan = async (page: puppeteer.Page, date: moment.Moment) => {
   });
   const EVIL = /<tr>    <td class="td_div_1" width="100%" colspan="4" &nbsp;<="" td="">  <\/td><\/tr>/g;
   const parsedHtml = removeNewLines(html).replace(EVIL, "");
-  const screenshot = await takeScreenshot(page, parsedHtml);
-  return await uploadImage("bakalari-plan-akci.png", screenshot);
+  const name = "bakalari-plan-akci.png";
+  const localPath = await takeScreenshot(page, parsedHtml, name);
+  return await processImage(localPath);
 };
 
 export const getAvailableDates = async (page: puppeteer.Page) => {
