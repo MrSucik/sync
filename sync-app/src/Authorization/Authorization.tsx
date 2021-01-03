@@ -14,7 +14,7 @@ const Authorization = () => {
   const [authorized, setAuthorized] = useState(false);
   const firestore = useFirestore();
   useEffect(() => {
-    if (!auth.isEmpty) {
+    if (auth.isEmpty) {
       return;
     }
     firestore
