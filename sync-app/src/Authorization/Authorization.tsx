@@ -14,7 +14,7 @@ const Authorization = () => {
   const [authorized, setAuthorized] = useState(false);
   const firestore = useFirestore();
   useEffect(() => {
-    if (!auth.email) {
+    if (!auth.isEmpty) {
       return;
     }
     firestore
@@ -26,7 +26,7 @@ const Authorization = () => {
         )
       )
       .finally(() => setLoading(false));
-  }, [auth.email, firestore]);
+  }, [auth, firestore]);
   return loading ? <Loading /> : authorized ? <Dashboard /> : <Unauthorized />;
 };
 export default Authorization;
