@@ -1,5 +1,5 @@
 import React from "react";
-import { MediaModel } from "./models";
+import { MediaModel } from "../definitions";
 
 interface Props {
   media: MediaModel;

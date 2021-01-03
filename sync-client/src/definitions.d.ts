@@ -11,6 +11,7 @@ export interface ClientModel {
 }
 
 export interface MediaModel {
+  id: string;
   name: string;
   source: string;
   duration: number;

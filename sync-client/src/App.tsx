@@ -1,32 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { clientDoc } from "./fire";
-import Media from "./Media";
-import { ClientModel, SceneModel } from "./models";
+import Scene from "./components/Scene";
+import { useFirestoreSubscription } from "./hooks/useFirestoreSubscription";
+import { useStatusReporting } from "./hooks/useStatusReporting";
 
 const App = () => {
-  const [activeScene, setActiveScene] = useState<SceneModel | null>(null);
-  const sceneUnsubscribe = useRef(() => {});
-  useEffect(() => {
-    const clientUnsubscribe = clientDoc.onSnapshot(async (clientSnapshot) => {
-      sceneUnsubscribe.current();
-      const sceneDoc = (clientSnapshot.data() as ClientModel).scene;
-      
-      const unsub = sceneDoc.onSnapshot(async (sceneSnapshot) => {
-        if (!sceneSnapshot.exists) {
-          return;
-        }
-        const scene = sceneSnapshot.data() as SceneModel;
-        setActiveScene(scene);
-      });
-      sceneUnsubscribe.current = unsub;
-    });
-    return () => {
-      clientUnsubscribe();
-      sceneUnsubscribe.current();
-    };
-  }, []);
-
-  return activeScene ? (
+  useStatusReporting();
+  const dataLoaded = useFirestoreSubscription();
+  return dataLoaded ? (
     <div
       style={{
         width: "100%",
@@ -36,7 +15,7 @@ const App = () => {
         justifyContent: "center",
       }}
     >
-      <Media scene={activeScene} />
+      <Scene />
     </div>
   ) : null;
 };

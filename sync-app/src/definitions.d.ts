@@ -20,7 +20,7 @@ export interface ClientModel extends FirestoreDocument {
   name: string;
   scene: string;
   icon: string;
-  online: boolean;
+  status: "online" | "offline";
 }
 
 export interface SceneModel extends FirestoreDocument {

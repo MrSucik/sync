@@ -27,12 +27,16 @@ const DeviceList = () => {
   };
   return (
     <List>
-      {clients.map(({ id, name, scene, icon, online }) => (
+      {clients.map(({ id, name, scene, icon, status }) => (
         <ListItem
           key={id}
           avatar={<Avatar src={getIconSource(icon)} />}
           body={
-            <DeviceListItemText online={online} name={name} scene={scene} />
+            <DeviceListItemText
+              online={status === "online"}
+              name={name}
+              scene={scene}
+            />
           }
           disabled={
             choosingMediaSceneId || choosingSceneClientId
