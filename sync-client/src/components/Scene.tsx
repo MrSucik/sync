@@ -15,7 +15,12 @@ const Scene = () => {
   const scene = useSelector<RootState, MappedScene>((state) => {
     const sceneId = state.firestore.data.clients[clientId].scene;
     const { name, mediaList } = state.firestore.data.scenes[sceneId];
-    const media = mediaList.map((id: string) => state.firestore.data.media[id]);
+    const media: MediaModel[] = [];
+    mediaList.forEach((id: string) => {
+      if (state.firestore.data.media[id]?.ready) {
+        media.push(state.firestore.data.media[id]);
+      }
+    });
     return { id: sceneId, name, media };
   });
   return <MediaPlayer media={scene.media} />;

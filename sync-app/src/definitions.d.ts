@@ -8,6 +8,7 @@ interface FirestoreDocument {
 
 export interface MediaModel extends FirestoreDocument {
   created: Timestamp;
+  ready: boolean;
   name: string;
   duration: number;
   source: string;

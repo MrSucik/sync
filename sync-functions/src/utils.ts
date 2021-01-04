@@ -53,12 +53,10 @@ export const uploadFile = (localPath: string) =>
 export const userExists = async (uid: string) =>
   (await usersCollection.doc(uid).get()).exists;
 
-export const processImage = async (
-  fileName: string
+export const processLocalImage = async (
+  localFilePath: string
 ): Promise<ConversionResult> => {
-  const localFilePath = tempFilePath(fileName);
-  await bucket.file(fileName).download({ destination: localFilePath });
-  const resizedFileName = `converted_${fileName}`;
+  const resizedFileName = `converted_${path.basename(localFilePath)}`;
   const localResizedImagePath = tempFilePath(resizedFileName);
   const resizedImage = await sharp(localFilePath)
     .resize({
@@ -68,13 +66,21 @@ export const processImage = async (
     .toFile(localResizedImagePath);
   if (resizedImage.height <= 1920) {
     await uploadFile(localResizedImagePath);
-    return { type: "image", name: localResizedImagePath };
+    return { type: "image", name: resizedFileName };
   } else {
     return {
       type: "video",
       name: await processVideo(localResizedImagePath, resizedImage.height),
     };
   }
+};
+
+export const processImage = async (
+  fileName: string
+): Promise<ConversionResult> => {
+  const localFilePath = tempFilePath(fileName);
+  await bucket.file(fileName).download({ destination: localFilePath });
+  return await processLocalImage(localFilePath);
 };
 
 const processVideo = (inputPath: string, inputHeight: number) =>

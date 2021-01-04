@@ -3,12 +3,13 @@ import { MediaModel } from "../definitions";
 
 interface Props {
   media: MediaModel;
+  downloadURL: string;
 }
 
-const Image: React.FC<Props> = ({ media }) => {
+const Image: React.FC<Props> = ({ media, downloadURL }) => {
   return (
     <img
-      src={media.source}
+      src={downloadURL}
       alt={media.name}
       style={{ width: "100%", alignSelf: "center" }}
     />

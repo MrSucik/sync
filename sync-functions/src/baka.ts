@@ -1,6 +1,6 @@
 import * as puppeteer from "puppeteer";
 import * as moment from "moment";
-import { processImage, tempFilePath } from "./utils";
+import { processLocalImage, tempFilePath } from "./utils";
 import { bakaSuplRoute, bakaSuffix, bakaPlanRoute } from "./constants";
 
 const removeNewLines = (input: string) => input.replace(/\r?\n|\r/g, "");
@@ -53,7 +53,7 @@ export const scrapeSupl = async (page: puppeteer.Page, date: moment.Moment) => {
   });
   const name = "bakalari-suplovani.png";
   const localPath = await takeScreenshot(page, html, name);
-  return await processImage(localPath);
+  return await processLocalImage(localPath);
 };
 
 export const scrapePlan = async (page: puppeteer.Page, date: moment.Moment) => {
@@ -69,7 +69,7 @@ export const scrapePlan = async (page: puppeteer.Page, date: moment.Moment) => {
   const parsedHtml = removeNewLines(html).replace(EVIL, "");
   const name = "bakalari-plan-akci.png";
   const localPath = await takeScreenshot(page, parsedHtml, name);
-  return await processImage(localPath);
+  return await processLocalImage(localPath);
 };
 
 export const getAvailableDates = async (page: puppeteer.Page) => {

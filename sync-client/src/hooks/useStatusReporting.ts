@@ -21,12 +21,10 @@ export const useStatusReporting = () => {
     firebaseApp
       .database()
       .ref(".info/connected")
-      .on("value", (snapshot) => {
+      .on("value", async (snapshot) => {
         if (snapshot.val()) {
-          userStatusDatabaseRef
-            .onDisconnect()
-            .set(isOfflineForDatabase)
-            .then(() => userStatusDatabaseRef.set(isOnlineForDatabase));
+          await userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase);
+          userStatusDatabaseRef.set(isOnlineForDatabase);
         }
       });
   }, [clientId]);

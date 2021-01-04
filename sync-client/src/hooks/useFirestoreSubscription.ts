@@ -5,7 +5,7 @@ import { RootState } from "../store/store";
 export const useFirestoreSubscription = () => {
   useFirestoreConnect([
     { collection: "clients" },
-    { collection: "media" },
+    { collection: "media", where: ["ready", "==", true] },
     { collection: "scenes" },
   ]);
   const loaded = useSelector<RootState, boolean>(

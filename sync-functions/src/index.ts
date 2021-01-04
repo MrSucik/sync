@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import * as moment from "moment";
 import { initialize, getAvailableDates, scrapePlan, scrapeSupl } from "./baka";
 import { bakaSuplDatesRoute, bakaPlanDatesRoute } from "./constants";
+import { MediaModel } from "./definitions";
 import {
   app,
   firestore,
@@ -11,9 +12,9 @@ import {
   userExists,
 } from "./utils";
 
-export const scheduledBakaScraping = functions
+export const onScheduledBakalariScraping = functions
   .region("europe-west3")
-  .runWith({ memory: "2GB" })
+  .runWith({ memory: "2GB", timeoutSeconds: 120 })
   .pubsub.schedule("every 5 minutes")
   .onRun(async () => {
     const configuration = await getConfiguration();
@@ -28,6 +29,40 @@ export const scheduledBakaScraping = functions
     const planResult = await scrapePlan(page, moment(planDate));
     const suplResult = await scrapeSupl(page, moment(suplDate));
     await updateBakaMedia(suplResult, planResult);
+  });
+
+export const onClientStatusChanged = functions.database
+  .ref("/status/{uid}")
+  .onUpdate(async (change, context) => {
+    const eventStatus = change.after.val();
+    const userStatusFirestoreRef = firestore
+      .collection("clients")
+      .doc(context.params.uid);
+    const statusSnapshot = await change.after.ref.once("value");
+    const status = statusSnapshot.val();
+    return status.last_changed > eventStatus.last_changed
+      ? null
+      : userStatusFirestoreRef.update({ status: eventStatus.state });
+  });
+
+export const onMediaCreated = functions
+  .runWith({ memory: "2GB", timeoutSeconds: 300 })
+  .firestore.document("media/{mediaId}")
+  .onCreate(async (snapshot) => {
+    const data = snapshot.data() as MediaModel;
+    if (data.ready) {
+      return;
+    }
+    const originalSource = data.source;
+    const { name: convertedFileName, type } = await processImage(
+      originalSource
+    );
+    await snapshot.ref.update({
+      source: convertedFileName,
+      type,
+      ready: true,
+      originalSource,
+    });
   });
 
 const createAvailableDatesFunction = (url: string) =>
@@ -71,33 +106,5 @@ export const clientAccess = functions
     } else {
       const token = await app.auth().createCustomToken(clientId);
       response.send(token);
-    }
-  });
-
-export const onClientStatusChanged = functions.database
-  .ref("/status/{uid}")
-  .onUpdate(async (change, context) => {
-    const eventStatus = change.after.val();
-    const userStatusFirestoreRef = firestore
-      .collection("clients")
-      .doc(context.params.uid);
-    const statusSnapshot = await change.after.ref.once("value");
-    const status = statusSnapshot.val();
-    return status.last_changed > eventStatus.last_changed
-      ? null
-      : userStatusFirestoreRef.update({ status: eventStatus.state });
-  });
-
-export const conversion = functions
-  .runWith({ memory: "4GB", timeoutSeconds: 300 })
-  .region("europe-west3")
-  .https.onRequest(async (request, response) => {
-    try {
-      const fileName = request.query.name as string;
-      const result = await processImage(fileName);
-      response.send(result);
-    } catch (error) {
-      functions.logger.error(error);
-      response.status(500).send(error);
     }
   });

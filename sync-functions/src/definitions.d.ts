@@ -18,6 +18,7 @@ interface MediaModel {
   source: string;
   type: string;
   color: string;
+  ready: boolean;
   configurable?: boolean;
 }
 
