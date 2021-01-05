@@ -1,5 +1,4 @@
 import React from "react";
-import { Box } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import Devices from "../Devices/Devices";
@@ -8,6 +7,7 @@ import Scenes from "../Scenes/Scenes";
 import { RootState } from "../store";
 import Header from "./Header";
 import Loading from "../components/Loading";
+import Container from "./Container";
 
 const Dashboard = () => {
   useFirestoreConnect([
@@ -26,11 +26,11 @@ const Dashboard = () => {
   return dataLoaded ? (
     <>
       <Header />
-      <Box style={{ display: "flex" }}>
+      <Container>
         <Media />
         <Scenes />
         <Devices />
-      </Box>
+      </Container>
     </>
   ) : (
     <Loading />

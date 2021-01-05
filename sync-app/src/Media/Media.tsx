@@ -34,7 +34,7 @@ const Media = () => {
           onCancelChoosing={isChoosing ? handleCancelChoosing : undefined}
         />
         <UploadMediaModal />
-        <List>
+        <List disablePadding>
           {mediaList.map((media) => (
             <MediaListItem media={media} />
           ))}

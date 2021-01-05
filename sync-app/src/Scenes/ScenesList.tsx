@@ -1,6 +1,4 @@
 import React from "react";
-import { Box } from "@material-ui/core";
-import DevicesBar from "./DevicesBar";
 import CardHeader from "../components/CardHeader";
 import Card from "../components/Card";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +8,7 @@ import { setChoosingMedia, setChoosingScene } from "../store/slices/app";
 import ScenesMediaList from "./ScenesMediaList";
 import { useSnackbar } from "notistack";
 import { useScenesWithChildren } from "./useScenesWithChildren";
+import DevicesBar from "./DevicesBar";
 
 const ScenesList = () => {
   const scenes = useScenesWithChildren();
@@ -55,7 +54,7 @@ const ScenesList = () => {
     enqueueSnackbar("Scene name updated", { variant: "success" });
   };
   return (
-    <Box p={1}>
+    <>
       {scenes.map((scene) => (
         <Card
           key={scene.id}
@@ -63,9 +62,15 @@ const ScenesList = () => {
             Boolean(choosingMediaSceneId) && choosingMediaSceneId !== scene.id
           }
           outerBoxProps={{
-            p: 0.5,
             onClick: () => handleClick(scene.id),
-            style: { cursor: choosingSceneClientId ? "pointer" : "auto" },
+            style: {
+              cursor: choosingSceneClientId ? "pointer" : "auto",
+            },
+          }}
+          innerPaperProps={{
+            style: {
+              backgroundColor: "rgb(66, 96, 143)",
+            },
           }}
         >
           <CardHeader
@@ -86,14 +91,14 @@ const ScenesList = () => {
           />
           <ScenesMediaList scene={scene} />
           <DevicesBar
-            devices={scene.clientsList.map(({ name, icon }) => ({
-              icon,
-              tooltip: name,
+            devices={scene.clientsList.map((x) => ({
+              icon: x.icon,
+              tooltip: x.name,
             }))}
           />
         </Card>
       ))}
-    </Box>
+    </>
   );
 };
 

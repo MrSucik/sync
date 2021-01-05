@@ -27,13 +27,11 @@ const Card: React.FC<Props> = forwardRef<any, Props>(
             zIndex: 999,
           }}
         />
-        <Paper elevation={3} {...innerPaperProps}>
-          {children}
-        </Paper>
+        <Paper {...innerPaperProps}>{children}</Paper>
       </Box>
     ) : (
       <Box flex={1} padding={2} {...outerBoxProps}>
-        <Paper elevation={3} {...innerPaperProps}>
+        <Paper elevation={0} {...innerPaperProps}>
           {children}
         </Paper>
       </Box>

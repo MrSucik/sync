@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: 8,
       borderRadius: 4,
       cursor: props.clickable ? "pointer" : undefined,
-      background: "#fff"
+      background: "#fff",
     }),
   })
 );

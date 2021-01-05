@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     toolbar: {
       justifyContent: "space-between",
-      backgroundColor: theme.palette.primary.main,
       color: theme.palette.getContrastText(theme.palette.primary.main),
     },
     placeholder: {
@@ -31,7 +30,7 @@ const Header = () => {
       <AppBar>
         <Toolbar color="primary" className={classes.toolbar}>
           <Typography variant="h6" component="h1">
-            Sync
+            Sync app
           </Typography>
           <LogoutButton />
         </Toolbar>

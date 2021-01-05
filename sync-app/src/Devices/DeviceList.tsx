@@ -26,7 +26,7 @@ const DeviceList = () => {
     dispatch(setChoosingScene(id));
   };
   return (
-    <List>
+    <List disablePadding>
       {clients.map(({ id, name, scene, icon, status }) => (
         <ListItem
           key={id}

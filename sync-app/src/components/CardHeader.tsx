@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  title: string;
+  title?: string;
   actions?: {
     tooltip: string;
     icon: string;
@@ -41,7 +41,7 @@ interface Props {
 }
 
 const CardHeader: React.FC<Props> = ({
-  title,
+  title = "",
   onChangeTitle,
   children,
   actions,

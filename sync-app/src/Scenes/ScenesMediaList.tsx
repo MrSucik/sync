@@ -53,7 +53,11 @@ const ScenesMediaList: React.FC<Props> = ({ scene: { mediaList, id } }) => {
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="scene">
         {(provided) => (
-          <List ref={provided.innerRef} {...provided.droppableProps}>
+          <List
+            disablePadding
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
             {mediaList.map((media, index) => (
               <SceneMediaListItem
                 key={media.id}
