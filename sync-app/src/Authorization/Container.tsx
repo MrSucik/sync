@@ -30,7 +30,7 @@ const Container: React.FC<Props> = ({ title, backgroundImage, children }) => {
   const classes = useStyles({ backgroundImage });
   return (
     <Box className={classes.container}>
-      <Card innerPaperProps={{ className: classes.innerContainer }}>
+      <Card outerBoxProps={{ className: classes.innerContainer }}>
         <CardHeader title={title} />
         <Box className={classes.backgroundImage}>{children}</Box>
       </Card>

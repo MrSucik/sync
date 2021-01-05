@@ -9,12 +9,13 @@ import {
 } from "@material-ui/core";
 import Tooltip from "./Tooltip";
 import ChooseChip from "./ChooseChip";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     color: "white",
     height: 40,
-    padding: 8,
+    padding: theme.spacing(1),
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -27,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     borderBottomColor: "white",
   },
+  sideMargin: {
+    margin: "0 7px",
+  },
 }));
 
 interface Props {
@@ -38,6 +42,7 @@ interface Props {
   }[];
   onChangeTitle?: (newTitle: string) => void;
   onCancelChoosing?: () => void;
+  sideMargin?: boolean;
 }
 
 const CardHeader: React.FC<Props> = ({
@@ -46,6 +51,7 @@ const CardHeader: React.FC<Props> = ({
   children,
   actions,
   onCancelChoosing,
+  sideMargin,
 }) => {
   const classes = useStyles();
   const [titleInputVisible, setTitleInputVisible] = useState(false);
@@ -58,7 +64,7 @@ const CardHeader: React.FC<Props> = ({
     setTitleInputVisible(false);
   };
   return (
-    <Box className={classes.container}>
+    <Box className={clsx(classes.container, sideMargin && classes.sideMargin)}>
       <Box display="flex" alignItems="center">
         {titleInputVisible ? (
           <>

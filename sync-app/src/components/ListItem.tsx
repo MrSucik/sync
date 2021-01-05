@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import Tooltip from "./Tooltip";
 import clsx from "clsx";
+import Glowing from "./Glowing";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,16 +19,17 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: "rgba(63, 81, 181, 0.2) !important",
     },
     disabled: {
-      backgroundColor: "rgba(10, 10, 10, 0.2) !important",
+      backgroundColor: "rgba(10, 10, 10, 0.5) !important",
     },
     listItem: (props: {
       color: string | undefined;
       actions: number;
       clickable: boolean;
     }) => ({
+      position: "relative",
       borderLeft: props.color ? `4px solid ${props.color}` : "",
       borderRadius: 4,
-      paddingRight: 16 + 30 * props.actions,
+      paddingRight: theme.spacing(2) + 30 * props.actions,
     }),
     container: (props: {
       color: string | undefined;
@@ -35,10 +37,10 @@ const useStyles = makeStyles((theme: Theme) =>
       clickable: boolean;
     }) => ({
       boxShadow: `0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);`,
-      margin: 8,
+      margin: theme.spacing(1),
       borderRadius: 4,
       cursor: props.clickable ? "pointer" : undefined,
-      background: "#fff",
+      background: theme.palette.common.white,
     }),
   })
 );
@@ -55,10 +57,23 @@ interface Props {
   selected?: boolean;
   color?: string;
   onClick?: () => void;
+  clickable?: boolean;
 }
 
 const ListItem = forwardRef<any, Props>(
-  ({ avatar, body, disabled, selected, color, actions = [], onClick }, ref) => {
+  (
+    {
+      avatar,
+      body,
+      disabled,
+      selected,
+      color,
+      actions = [],
+      onClick,
+      clickable,
+    },
+    ref
+  ) => {
     const classes = useStyles({
       color,
       actions: actions.length,
@@ -77,6 +92,7 @@ const ListItem = forwardRef<any, Props>(
         selected={selected}
         ContainerProps={{ className: classes.container }}
       >
+        {clickable && <Glowing />}
         {avatar && <ListItemAvatar>{avatar}</ListItemAvatar>}
         {body}
         <ListItemSecondaryAction>

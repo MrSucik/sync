@@ -94,7 +94,7 @@ const AddMediaForm: React.FC = () => {
     }
   };
   return (
-    <>
+    <Box style={{ backgroundColor: "#fff" }}>
       <Box display="flex" padding={1}>
         <TextField
           value={name}
@@ -127,7 +127,7 @@ const AddMediaForm: React.FC = () => {
           {loading ? <CircularProgress color="inherit" size={24} /> : "Save"}
         </Button>
       </Box>
-    </>
+    </Box>
   );
 };
 

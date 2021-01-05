@@ -61,17 +61,9 @@ const ScenesList = () => {
           disabled={
             Boolean(choosingMediaSceneId) && choosingMediaSceneId !== scene.id
           }
-          outerBoxProps={{
-            onClick: () => handleClick(scene.id),
-            style: {
-              cursor: choosingSceneClientId ? "pointer" : "auto",
-            },
-          }}
-          innerPaperProps={{
-            style: {
-              backgroundColor: "rgb(66, 96, 143)",
-            },
-          }}
+          fill
+          clickable={Boolean(choosingSceneClientId)}
+          outerBoxProps={{ onClick: () => handleClick(scene.id) }}
         >
           <CardHeader
             title={scene.name}
@@ -91,9 +83,9 @@ const ScenesList = () => {
           />
           <ScenesMediaList scene={scene} />
           <DevicesBar
-            devices={scene.clientsList.map((x) => ({
-              icon: x.icon,
-              tooltip: x.name,
+            devices={scene.clientsList.map(({ name, icon }) => ({
+              icon,
+              tooltip: name,
             }))}
           />
         </Card>

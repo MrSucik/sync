@@ -63,6 +63,9 @@ const MediaListItem: React.FC<Props> = ({
   };
   return (
     <ListItem
+      clickable={
+        Boolean(choosingMediaSceneId) && !choosingMediaList.includes(id)
+      }
       onClick={choosingMediaSceneId ? () => handleClick(id) : undefined}
       avatar={<Avatar alt={name} source={source} />}
       body={<ListItemText primary={name} secondary={`${duration} seconds`} />}

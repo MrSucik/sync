@@ -15,6 +15,9 @@ const Media = () => {
   const isChoosing = useSelector<RootState, boolean>((state) =>
     Boolean(state.app.choosingMedia)
   );
+  const isOtherChoosing = useSelector<RootState, boolean>((state) =>
+    Boolean(state.app.choosingScene)
+  );
   const mediaList = useSelector<RootState, MediaModel[]>(
     (state) => state.firestore.ordered.media
   );
@@ -25,13 +28,14 @@ const Media = () => {
   return (
     <>
       <BakalariConfigurationModal />
-      <Card>
+      <Card disabled={isOtherChoosing}>
         <CardHeader
           title="Media"
           actions={[
             { icon: "add", tooltip: "Upload new media", onClick: handleClick },
           ]}
           onCancelChoosing={isChoosing ? handleCancelChoosing : undefined}
+          sideMargin
         />
         <UploadMediaModal />
         <List disablePadding>

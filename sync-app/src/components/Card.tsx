@@ -1,39 +1,38 @@
 import React, { forwardRef } from "react";
-import { Box, BoxProps, Paper, PaperProps } from "@material-ui/core";
+import { Box, BoxProps } from "@material-ui/core";
+import Glowing from "./Glowing";
+import Disabled from "./Disabled";
 
 interface Props {
   disabled?: boolean;
+  fill?: boolean;
+  clickable?: boolean;
   outerBoxProps?: BoxProps;
-  innerPaperProps?: PaperProps;
 }
 
 const Card: React.FC<Props> = forwardRef<any, Props>(
-  ({ children, innerPaperProps, outerBoxProps, disabled }, ref) => {
-    return disabled ? (
+  ({ children, outerBoxProps, disabled, fill, clickable }, ref) => {
+    return (
       <Box
-        position="relative"
-        flex={1}
-        padding={2}
         // @ts-ignore
         ref={ref}
+        flex={1}
+        margin={1}
+        marginBottom={3}
         {...outerBoxProps}
       >
         <Box
+          margin={1}
+          position="relative"
           style={{
-            position: "absolute",
-            inset: 0,
-            backgroundColor: "rgba(10, 10, 10, 0.2)",
-            opacity: 0.5,
-            zIndex: 999,
+            backgroundColor: fill ? "rgb(66, 96, 143)" : "transparent",
+            cursor: clickable ? "pointer" : "auto",
           }}
-        />
-        <Paper {...innerPaperProps}>{children}</Paper>
-      </Box>
-    ) : (
-      <Box flex={1} padding={2} {...outerBoxProps}>
-        <Paper elevation={0} {...innerPaperProps}>
+        >
+          {clickable && <Glowing />}
+          {disabled && <Disabled />}
           {children}
-        </Paper>
+        </Box>
       </Box>
     );
   }
