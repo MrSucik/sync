@@ -27,7 +27,12 @@ const BakalariConfigurationModal = () => {
   };
   return (
     <Modal open={Boolean(type)} onClose={handleClose}>
-      <Card outerBoxProps={{ className: classes.container }}>
+      <Card
+        outerBoxProps={{
+          className: classes.container,
+          style: { backgroundColor: "#fff" },
+        }}
+      >
         <CardHeader
           title={
             type === "bakalari-plan-akci"

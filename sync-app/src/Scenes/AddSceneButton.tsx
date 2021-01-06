@@ -1,5 +1,6 @@
 import { Box, Icon, makeStyles } from "@material-ui/core";
 import React from "react";
+import Tooltip from "../components/Tooltip";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -28,9 +29,11 @@ interface Props {
 const AddSceneButton: React.FC<Props> = ({ onClick }) => {
   const classes = useStyles();
   return (
-    <Box onClick={onClick} className={classes.container}>
-      <Icon className={classes.icon}>add</Icon>
-    </Box>
+    <Tooltip title="Click to create a new scene">
+      <Box onClick={onClick} className={classes.container}>
+        <Icon className={classes.icon}>add</Icon>
+      </Box>
+    </Tooltip>
   );
 };
 export default AddSceneButton;

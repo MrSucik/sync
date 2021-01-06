@@ -4,7 +4,11 @@ import Card from "../components/Card";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { useFirestore } from "react-redux-firebase";
-import { setChoosingMedia, setChoosingScene } from "../store/slices/app";
+import {
+  setChoosingMedia,
+  setChoosingScene,
+  setPreviewMediaList,
+} from "../store/slices/app";
 import ScenesMediaList from "./ScenesMediaList";
 import { useSnackbar } from "notistack";
 import { useScenesWithChildren } from "./useScenesWithChildren";
@@ -53,6 +57,9 @@ const ScenesList = () => {
     await firestore.update({ collection: "scenes", doc: id }, { name });
     enqueueSnackbar("Scene name updated", { variant: "success" });
   };
+  const handlePreviewClick = (mediaList: string[]) => {
+    dispatch(setPreviewMediaList(mediaList));
+  };
   return (
     <>
       {scenes.map((scene) => (
@@ -72,6 +79,12 @@ const ScenesList = () => {
                 icon: "add",
                 tooltip: "Add media to this scene",
                 onClick: () => handleAddClick(scene.id),
+              },
+              {
+                icon: "remove_red_eye",
+                tooltip: "Prewview this scene",
+                onClick: () =>
+                  handlePreviewClick(scene.mediaList.map((x) => x.id)),
               },
               {
                 icon: "delete",

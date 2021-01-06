@@ -11,6 +11,7 @@ export interface AppState {
   choosingScene: string | null;
   choosingMedia: string | null;
   optimisticReorderUpdate: ReorderUpdate | null;
+  previewMediaList: string[];
 }
 
 const initialState: AppState = {
@@ -19,6 +20,7 @@ const initialState: AppState = {
   choosingMedia: null,
   optimisticReorderUpdate: null,
   configureMediaModalOpen: null,
+  previewMediaList: [],
 };
 
 const appSlice = createSlice({
@@ -46,6 +48,9 @@ const appSlice = createSlice({
     ) {
       state.configureMediaModalOpen = action.payload;
     },
+    setPreviewMediaList(state, action: PayloadAction<string[]>) {
+      state.previewMediaList = action.payload;
+    },
   },
 });
 
@@ -55,6 +60,7 @@ export const {
   setChoosingMedia,
   setOptimisticReorderUpdate,
   setConfigureMediaModalOpen,
+  setPreviewMediaList,
 } = appSlice.actions;
 
 export default appSlice.reducer;

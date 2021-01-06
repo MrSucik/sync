@@ -8,6 +8,7 @@ import { RootState } from "../store";
 import Header from "./Header";
 import Loading from "../components/Loading";
 import Container from "./Container";
+import Preview from "../Preview/Preview";
 
 const Dashboard = () => {
   useFirestoreConnect([
@@ -25,6 +26,7 @@ const Dashboard = () => {
   );
   return dataLoaded ? (
     <>
+      <Preview />
       <Header />
       <Container>
         <Media />
