@@ -4,7 +4,7 @@ import Card from "../components/Card";
 import CardHeader from "../components/CardHeader";
 import MediaListItem from "./MediaListItem";
 import UploadMediaModal from "./UploadMediaModal";
-import { setAddMediaModalOpen, setChoosingMedia } from "../store/slices/app";
+import { setMediaModalState, setChoosingMedia } from "../store/slices/app";
 import BakalariConfigurationModal from "./BakalariConfiguration/BakalariConfigurationModal";
 import { RootState } from "../store";
 import { List } from "@material-ui/core";
@@ -21,7 +21,7 @@ const Media = () => {
   const mediaList = useSelector<RootState, MediaModel[]>(
     (state) => state.firestore.ordered.media
   );
-  const handleClick = () => dispatch(setAddMediaModalOpen(true));
+  const handleClick = () => dispatch(setMediaModalState("create"));
   const handleCancelChoosing = () => {
     dispatch(setChoosingMedia(null));
   };

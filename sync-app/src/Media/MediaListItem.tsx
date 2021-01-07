@@ -8,6 +8,7 @@ import { useFirestore } from "react-redux-firebase";
 import {
   setChoosingMedia,
   setConfigureMediaModalOpen,
+  setMediaModalState,
 } from "../store/slices/app";
 import { useSnackbar } from "notistack";
 import Avatar from "../components/Avatar";
@@ -61,6 +62,9 @@ const MediaListItem: React.FC<Props> = ({
   ) => {
     dispatch(setConfigureMediaModalOpen(id));
   };
+  const handleEditClick = (id: string) => {
+    dispatch(setMediaModalState(id));
+  };
   return (
     <ListItem
       clickable={
@@ -81,6 +85,11 @@ const MediaListItem: React.FC<Props> = ({
               },
             ]
           : [
+              {
+                icon: "edit",
+                onClick: () => handleEditClick(id),
+                tooltip: "Edit this media",
+              },
               {
                 icon: "delete",
                 onClick: () => handleDeleteClick(id),

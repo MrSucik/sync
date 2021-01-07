@@ -10,11 +10,13 @@ import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useFirestore } from "react-redux-firebase";
 import Button from "../components/Button";
-import { setAddMediaModalOpen } from "../store/slices/app";
-import { useDispatch } from "react-redux";
+import { setMediaModalState } from "../store/slices/app";
+import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
 import firebase from "firebase/app";
 import { uploadFile } from "../utils/fire";
+import { RootState } from "../store";
+import { MediaModel } from "../definitions";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -40,6 +42,12 @@ const AddMediaForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const firestore = useFirestore();
+  const updateMediaId = useSelector<RootState, string>(
+    (state) => state.app.mediaModalState
+  );
+  const updateMedia = useSelector<RootState, MediaModel | null>(
+    (state) => state.firestore.data.media[updateMediaId]
+  );
   const dispatch = useDispatch();
   const handleFileRejection = () =>
     enqueueSnackbar("Invalid file type", { variant: "error" });
@@ -47,11 +55,18 @@ const AddMediaForm: React.FC = () => {
     accept: "image/jpeg, image/png",
     onDropRejected: handleFileRejection,
   });
-  const [duration, setDuration] = useState("30");
-  const [name, setName] = useState("");
-  const validate = () => {
+  const [duration, setDuration] = useState<string>(
+    updateMedia?.duration + "" || "30"
+  );
+  const [name, setName] = useState<string>(updateMedia?.name || "");
+  const validateFile = () => {
     if (!acceptedFiles[0]) {
       enqueueSnackbar("Upload a file before saving", { variant: "error" });
+      return false;
+    }
+  };
+  const validate = () => {
+    if (!updateMedia && !validateFile()) {
       return false;
     }
     if (
@@ -66,12 +81,27 @@ const AddMediaForm: React.FC = () => {
     }
     return true;
   };
-  const handleSave = async () => {
-    const valid = validate();
-    if (!valid) {
-      return;
+  const handleUpdate = async () => {
+    try {
+      const file = acceptedFiles[0];
+      const source = file ? await uploadFile(file) : updateMedia!.source;
+      await firestore.update(
+        { collection: "media", doc: updateMediaId },
+        {
+          duration,
+          name,
+          source,
+          type: "image",
+          ready: Boolean(file),
+        }
+      );
+      dispatch(setMediaModalState("closed"));
+      enqueueSnackbar("Media updated successfully", { variant: "success" });
+    } catch {
+      enqueueSnackbar("Failed to update this media", { variant: "error" });
     }
-    setLoading(true);
+  };
+  const handleSave = async () => {
     try {
       const file = acceptedFiles[0];
       const remoteFileName = await uploadFile(file);
@@ -87,11 +117,19 @@ const AddMediaForm: React.FC = () => {
           ready: false,
         }
       );
-      dispatch(setAddMediaModalOpen(false));
+      dispatch(setMediaModalState("closed"));
       enqueueSnackbar("Media uploaded successfully", { variant: "success" });
     } catch {
       enqueueSnackbar("Failed to upload the media", { variant: "error" });
     }
+  };
+  const handleSubmit = async () => {
+    const valid = validate();
+    if (!valid) {
+      return;
+    }
+    setLoading(true);
+    updateMedia ? handleUpdate() : handleSave();
   };
   return (
     <Box style={{ backgroundColor: "#fff" }}>
@@ -110,21 +148,26 @@ const AddMediaForm: React.FC = () => {
           label="Duration (seconds)"
           placeholder="30"
           type="number"
-          inputProps={{
-            min: "0",
-            max: "600",
-          }}
+          inputProps={{ min: "0", max: "600" }}
         />
       </Box>
       <Box className={classes.dropzone} {...getRootProps()}>
         <input {...getInputProps()} />
         <Typography color="primary">
-          {acceptedFiles[0] ? acceptedFiles[0].name : "Drop your files here"}
+          {acceptedFiles[0]
+            ? acceptedFiles[0].name
+            : updateMedia?.source || "Drop your files here"}
         </Typography>
       </Box>
       <Box display="flex" flexDirection="row-reverse" padding={1}>
-        <Button variant="contained" color="primary" onClick={handleSave}>
-          {loading ? <CircularProgress color="inherit" size={24} /> : "Save"}
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          {loading ? (
+            <CircularProgress color="inherit" size={24} />
+          ) : updateMedia ? (
+            "Update"
+          ) : (
+            "Save"
+          )}
         </Button>
       </Box>
     </Box>

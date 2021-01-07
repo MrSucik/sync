@@ -1,12 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export type ModalState = "closed" | "create" | string;
+
 interface ReorderUpdate {
   sceneId: string;
   mediaList: string[];
 }
 
 export interface AppState {
-  addMediaModalOpen: boolean;
+  mediaModalState: ModalState;
   configureMediaModalOpen: null | "bakalari-suplovani" | "bakalari-plan-akci";
   choosingScene: string | null;
   choosingMedia: string | null;
@@ -15,7 +17,7 @@ export interface AppState {
 }
 
 const initialState: AppState = {
-  addMediaModalOpen: false,
+  mediaModalState: "closed",
   choosingScene: null,
   choosingMedia: null,
   optimisticReorderUpdate: null,
@@ -27,8 +29,8 @@ const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    setAddMediaModalOpen(state, action: PayloadAction<boolean>) {
-      state.addMediaModalOpen = action.payload;
+    setMediaModalState(state, action: PayloadAction<ModalState>) {
+      state.mediaModalState = action.payload;
     },
     setChoosingScene(state, action: PayloadAction<string | null>) {
       state.choosingScene = action.payload;
@@ -55,7 +57,7 @@ const appSlice = createSlice({
 });
 
 export const {
-  setAddMediaModalOpen,
+  setMediaModalState,
   setChoosingScene,
   setChoosingMedia,
   setOptimisticReorderUpdate,
