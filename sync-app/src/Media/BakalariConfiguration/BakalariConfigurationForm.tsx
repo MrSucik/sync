@@ -34,10 +34,10 @@ const useStyles = makeStyles((theme) => ({
 
 interface State {
   autoSuplDate: boolean;
-  suplDate: string;
+  suplDate: number;
   suplDuration: number;
   autoPlanDate: boolean;
-  planDate: string;
+  planDate: number;
   planDuration: number;
 }
 
@@ -62,8 +62,8 @@ const BakalariConfigurationForm: React.FC<Props> = ({ type, onClose }) => {
     planDuration,
     autoPlanDate: configuration.autoPlanDate,
     autoSuplDate: configuration.autoSuplDate,
-    planDate: configuration.planDate.toDate().toDateString(),
-    suplDate: configuration.suplDate.toDate().toDateString(),
+    planDate: configuration.planDate.seconds * 1000,
+    suplDate: configuration.suplDate.seconds * 1000,
   });
   const dates = useAvailableDates();
   const firestore = useFirestore();
@@ -72,20 +72,22 @@ const BakalariConfigurationForm: React.FC<Props> = ({ type, onClose }) => {
       created: firebase.firestore.Timestamp.fromDate(moment().toDate()),
       autoPlanDate: data.autoPlanDate,
       autoSuplDate: data.autoSuplDate,
-      planDate: firebase.firestore.Timestamp.fromDate(new Date(data.planDate)),
-      suplDate: firebase.firestore.Timestamp.fromDate(new Date(data.suplDate)),
+      planDate: firebase.firestore.Timestamp.fromMillis(data.planDate),
+      suplDate: firebase.firestore.Timestamp.fromMillis(data.suplDate),
     });
-    await firestore
-      .collection("media")
-      .doc(type)
-      .update({
+    await firestore.update(
+      { collection: "media", doc: type },
+      {
         duration:
           type === "bakalari-plan-akci" ? data.planDuration : data.suplDuration,
-      });
+      }
+    );
     onClose();
   };
+  console.log(data.planDate);
+
   return (
-    <>
+    <Box style={{ backgroundColor: "#fff" }}>
       <Box className={classes.container}>
         {dates.length < 1 ? (
           <Box position="relative" height={170}>
@@ -182,7 +184,7 @@ const BakalariConfigurationForm: React.FC<Props> = ({ type, onClose }) => {
           Save
         </Button>
       </CardActions>
-    </>
+    </Box>
   );
 };
 

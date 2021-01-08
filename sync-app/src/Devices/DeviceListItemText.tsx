@@ -45,7 +45,18 @@ const DeviceListItemText: React.FC<Props> = ({ name, online, scene }) => {
           <Typography>{name}</Typography>
         </Box>
       }
-      secondary={`Currently running: ${scene}`}
+      secondary={
+        <>
+          {"Currently running: "}
+          <Typography
+            component="span"
+            color="primary"
+            style={{ fontWeight: "bold" }}
+          >
+            {scene}
+          </Typography>
+        </>
+      }
     />
   );
 };

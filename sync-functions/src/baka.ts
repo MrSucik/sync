@@ -77,7 +77,7 @@ export const getAvailableDates = async (page: puppeteer.Page) => {
     const options = Array.from(document.getElementsByTagName("option"));
     return Promise.resolve(options.map((x) => x.value.substr(2, 6)));
   });
-  return dates.map((date) => moment(date, "YYMMDD").format("YYYY-MM-DD"));
+  return dates.map((date) => moment(date, "YYMMDD").format("DD-MM-YYYY"));
 };
 
 const getUrl = (date: moment.Moment) => moment(date).format("YYMMDD");

@@ -9,7 +9,7 @@ import BakalariConfigurationForm from "./BakalariConfigurationForm";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    maxWidth: 350,
+    maxWidth: 300,
     margin: "auto",
     marginTop: theme.spacing(2),
   },
@@ -17,25 +17,18 @@ const useStyles = makeStyles((theme) => ({
 
 const BakalariConfigurationModal = () => {
   const classes = useStyles();
-  const type = useSelector<
+  const modalState = useSelector<
     RootState,
-    "bakalari-suplovani" | "bakalari-plan-akci" | null
-  >((state) => state.app.configureMediaModalOpen);
+    "bakalari-suplovani" | "bakalari-plan-akci" | "closed"
+  >((state) => state.app.configureMediaModalState);
   const dispatch = useDispatch();
-  const handleClose = () => {
-    dispatch(setConfigureMediaModalOpen(null));
-  };
+  const handleClose = () => dispatch(setConfigureMediaModalOpen("closed"));
   return (
-    <Modal open={Boolean(type)} onClose={handleClose}>
-      <Card
-        outerBoxProps={{
-          className: classes.container,
-          style: { backgroundColor: "#fff" },
-        }}
-      >
+    <Modal open={modalState !== "closed"} onClose={handleClose}>
+      <Card outerBoxProps={{ className: classes.container }}>
         <CardHeader
           title={
-            type === "bakalari-plan-akci"
+            modalState === "bakalari-plan-akci"
               ? "Bakaláři - Plán akcí"
               : "Bakaláři - Suplování"
           }
@@ -47,7 +40,10 @@ const BakalariConfigurationModal = () => {
             },
           ]}
         />
-        <BakalariConfigurationForm onClose={handleClose} type={type as any} />
+        <BakalariConfigurationForm
+          onClose={handleClose}
+          type={modalState as any}
+        />
       </Card>
     </Modal>
   );

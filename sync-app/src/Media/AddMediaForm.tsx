@@ -13,8 +13,7 @@ import Button from "../components/Button";
 import { setMediaModalState } from "../store/slices/app";
 import { useDispatch, useSelector } from "react-redux";
 import { useSnackbar } from "notistack";
-import firebase from "firebase/app";
-import { uploadFile } from "../utils/fire";
+import { createNewMedia, uploadFile } from "../utils/fire";
 import { RootState } from "../store";
 import { MediaModel } from "../definitions";
 
@@ -59,15 +58,12 @@ const AddMediaForm: React.FC = () => {
     updateMedia?.duration + "" || "30"
   );
   const [name, setName] = useState<string>(updateMedia?.name || "");
-  const validateFile = () => {
-    if (!acceptedFiles[0]) {
-      enqueueSnackbar("Upload a file before saving", { variant: "error" });
-      return false;
-    }
-  };
   const validate = () => {
-    if (!updateMedia && !validateFile()) {
-      return false;
+    if (!updateMedia) {
+      if (!acceptedFiles[0]) {
+        enqueueSnackbar("Upload a file before saving", { variant: "error" });
+        return false;
+      }
     }
     if (
       isNaN(duration as any) ||
@@ -103,20 +99,8 @@ const AddMediaForm: React.FC = () => {
   };
   const handleSave = async () => {
     try {
-      const file = acceptedFiles[0];
-      const remoteFileName = await uploadFile(file);
-      await firestore.add(
-        { collection: "media" },
-        {
-          created: firebase.firestore.FieldValue.serverTimestamp(),
-          color: "blue",
-          duration: duration || 30,
-          name: name || "New Media",
-          source: remoteFileName,
-          type: "image",
-          ready: false,
-        }
-      );
+      const remoteFileName = await uploadFile(acceptedFiles[0]);
+      await createNewMedia(name, duration, remoteFileName);
       dispatch(setMediaModalState("closed"));
       enqueueSnackbar("Media uploaded successfully", { variant: "success" });
     } catch {
@@ -146,9 +130,8 @@ const AddMediaForm: React.FC = () => {
           onChange={(event) => setDuration(event.target.value)}
           className={classes.durationField}
           label="Duration (seconds)"
-          placeholder="30"
           type="number"
-          inputProps={{ min: "0", max: "600" }}
+          inputProps={{ min: "1", max: "600" }}
         />
       </Box>
       <Box className={classes.dropzone} {...getRootProps()}>

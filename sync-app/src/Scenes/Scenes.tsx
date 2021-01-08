@@ -2,18 +2,14 @@ import React from "react";
 import { Box } from "@material-ui/core";
 import Card from "../components/Card";
 import ScenesList from "./ScenesList";
-import { useFirestore } from "react-redux-firebase";
 import { useSnackbar } from "notistack";
 import AddSceneButton from "./AddSceneButton";
+import { createNewScene } from "../utils/fire";
 
 const Scenes = () => {
-  const firestore = useFirestore();
   const { enqueueSnackbar } = useSnackbar();
   const handleAddScene = async () => {
-    await firestore.add(
-      { collection: "scenes" },
-      { name: "New scene", mediaList: [] }
-    );
+    await createNewScene();
     enqueueSnackbar("Scene added successfully", { variant: "success" });
   };
   return (

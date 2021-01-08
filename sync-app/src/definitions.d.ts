@@ -18,6 +18,7 @@ export interface MediaModel extends FirestoreDocument {
 }
 
 export interface ClientModel extends FirestoreDocument {
+  created: Timestamp;
   name: string;
   scene: string;
   icon: string;
@@ -25,6 +26,7 @@ export interface ClientModel extends FirestoreDocument {
 }
 
 export interface SceneModel extends FirestoreDocument {
+  created: Timestamp;
   name: string;
   mediaList: string[];
 }

@@ -81,8 +81,8 @@ const ScenesList = () => {
                 onClick: () => handleAddClick(scene.id),
               },
               {
-                icon: "remove_red_eye",
-                tooltip: "Prewview this scene",
+                icon: "visibility",
+                tooltip: "Preview this scene",
                 onClick: () =>
                   handlePreviewClick(scene.mediaList.map((x) => x.id)),
               },

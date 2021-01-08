@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import superagent from "superagent";
 import { RootState } from "../../store";
+import { ConfigureMediaModalState } from "../../store/slices/app";
 
 const endpoints = {
   "bakalari-suplovani":
@@ -11,13 +12,12 @@ const endpoints = {
 };
 
 export const useAvailableDates = () => {
-  const type = useSelector<
-    RootState,
-    "bakalari-suplovani" | "bakalari-plan-akci" | null
-  >((state) => state.app.configureMediaModalOpen);
+  const type = useSelector<RootState, ConfigureMediaModalState>(
+    (state) => state.app.configureMediaModalState
+  );
   const [dates, setDates] = useState<string[]>([]);
   useEffect(() => {
-    if (type) {
+    if (type !== "closed") {
       superagent
         .get(endpoints[type])
         .then((response) => setDates(response.body));

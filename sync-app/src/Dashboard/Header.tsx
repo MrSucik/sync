@@ -9,12 +9,15 @@ import {
   Typography,
 } from "@material-ui/core";
 import LogoutButton from "../Authorization/LogoutButton";
+import UsersAdministrationIconButton from "../Users/UsersAdministrationIconButton";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    container: {
+      color: theme.palette.getContrastText(theme.palette.primary.main),
+    },
     toolbar: {
       justifyContent: "space-between",
-      color: theme.palette.getContrastText(theme.palette.primary.main),
     },
     placeholder: {
       height: 64,
@@ -27,12 +30,15 @@ const Header = () => {
   return (
     <>
       <Box className={classes.placeholder} />
-      <AppBar>
+      <AppBar className={classes.container}>
         <Toolbar color="primary" className={classes.toolbar}>
           <Typography variant="h6" component="h1">
             Sync app
           </Typography>
-          <LogoutButton />
+          <Box display="flex">
+            <UsersAdministrationIconButton />
+            <LogoutButton />
+          </Box>
         </Toolbar>
       </AppBar>
     </>

@@ -22,11 +22,11 @@ const Card: React.FC<Props> = forwardRef<any, Props>(
         {...outerBoxProps}
       >
         <Box
-          margin={1}
           position="relative"
           style={{
             backgroundColor: fill ? "rgb(66, 96, 143)" : "transparent",
             cursor: clickable ? "pointer" : "auto",
+            borderRadius: 4,
           }}
         >
           {clickable && <Glowing />}

@@ -4,20 +4,23 @@ import React from "react";
 
 interface Props {
   dates: string[];
-  value: string;
-  onChange: (value: string) => void;
+  value: number;
+  onChange: (value: number) => void;
 }
 
 const DatePicker: React.FC<Props> = ({ onChange, value, dates }) => {
   return (
     <Select
       label="Vlastní datum"
-      value={value}
-      onChange={(event) => onChange(event.target.value as string)}
+      value={moment(value).format("DD-MM-YYYY")}
+      onChange={(event) =>
+        onChange(moment(event.target.value as string, "DD-MM-YYYY").valueOf())
+      }
+      MenuProps={{ PaperProps: { style: { backgroundColor: "#fff" } } }}
     >
       {dates.map((date) => (
         <MenuItem key={date} value={date}>
-          {moment(date).format("DD-MM-YYYY")}
+          {date}
         </MenuItem>
       ))}
     </Select>

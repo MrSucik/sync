@@ -1,8 +1,8 @@
 import { LinearProgress } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { MediaModel } from "../definitions";
-import { useDownloadURL } from "./useDownloadURL";
-import { useTimeout } from "./useTimeout";
+import { useDownloadURL } from "../hooks/useDownloadURL";
+import { useTimeout } from "../hooks/useTimeout";
 import moment from "moment";
 
 interface Props {

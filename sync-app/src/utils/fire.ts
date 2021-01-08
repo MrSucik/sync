@@ -29,3 +29,25 @@ export const uploadFile = async (file: File) => {
   await storage.ref().child(fileName).put(file, metadata);
   return fileName;
 };
+
+export const createNewScene = () =>
+  firestore.collection("scenes").add({
+    name: "New scene",
+    mediaList: [],
+    created: firebase.firestore.FieldValue.serverTimestamp(),
+  });
+
+export const createNewMedia = (
+  name: string,
+  duration: string,
+  remoteFileName: string
+) =>
+  firestore.collection("media").add({
+    created: firebase.firestore.FieldValue.serverTimestamp(),
+    color: "blue",
+    duration,
+    name: name || "New Media",
+    source: remoteFileName,
+    type: "image",
+    ready: false,
+  });
