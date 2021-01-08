@@ -8,6 +8,7 @@ import {
   createStyles,
   makeStyles,
   Theme,
+  LinearProgress,
 } from "@material-ui/core";
 import Tooltip from "./Tooltip";
 import clsx from "clsx";
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   body: JSX.Element;
+  progress?: number;
   avatar?: JSX.Element;
   actions?: {
     icon: string;
@@ -71,6 +73,7 @@ const ListItem = forwardRef<any, Props>(
       actions = [],
       onClick,
       clickable,
+      progress,
     },
     ref
   ) => {
@@ -95,6 +98,19 @@ const ListItem = forwardRef<any, Props>(
         {clickable && <Glowing />}
         {avatar && <ListItemAvatar>{avatar}</ListItemAvatar>}
         {body}
+        {progress && progress < 100 && (
+          <LinearProgress
+            style={{
+              position: "absolute",
+              inset: 0,
+              height: "100%",
+              opacity: 0.2,
+            }}
+            variant="determinate"
+            value={progress}
+            color="primary"
+          />
+        )}
         <ListItemSecondaryAction>
           {actions.map(({ icon, tooltip, onClick: actionOnClick }, index) => (
             <Tooltip key={index} title={tooltip}>

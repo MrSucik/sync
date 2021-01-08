@@ -18,7 +18,7 @@ interface Props {
 }
 
 const MediaListItem: React.FC<Props> = ({
-  media: { color, duration, id, name, source, configurable },
+  media: { color, duration, id, name, source, configurable, progress },
 }) => {
   const scenes = useSelector<RootState, SceneModel[]>(
     (state) => state.firestore.ordered.scenes
@@ -67,6 +67,7 @@ const MediaListItem: React.FC<Props> = ({
   };
   return (
     <ListItem
+      progress={progress}
       clickable={
         Boolean(choosingMediaSceneId) && !choosingMediaList.includes(id)
       }

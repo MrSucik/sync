@@ -12,7 +12,7 @@ interface Props {
 }
 
 const SceneMediaListItem: React.FC<Props> = ({
-  media: { id, color, duration, name, source },
+  media: { id, color, duration, name, source, progress },
   index,
   onRemove,
 }) => {
@@ -26,6 +26,7 @@ const SceneMediaListItem: React.FC<Props> = ({
         >
           <ListItem
             color={color}
+            progress={progress}
             avatar={<Avatar alt={name} source={source} />}
             body={
               <ListItemText primary={name} secondary={`${duration} seconds`} />
