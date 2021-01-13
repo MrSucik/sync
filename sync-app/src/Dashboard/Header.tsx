@@ -32,8 +32,12 @@ const Header = () => {
       <Box className={classes.placeholder} />
       <AppBar className={classes.container}>
         <Toolbar color="primary" className={classes.toolbar}>
-          <Typography variant="h6" component="h1">
-            Sync app
+          <Typography
+            style={{ fontFamily: "'B612 Mono', monospace" }}
+            variant="h4"
+            component="h1"
+          >
+            sync
           </Typography>
           <Box display="flex">
             <UsersAdministrationIconButton />
