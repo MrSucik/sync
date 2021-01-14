@@ -1,17 +1,15 @@
 import {
   Box,
   createStyles,
-  Icon,
-  IconButton,
   makeStyles,
   TextField,
   Theme,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import { useFirestore } from "react-redux-firebase";
-import Tooltip from "../components/Tooltip";
 import firebase from "firebase/app";
 import { useSnackbar } from "notistack";
+import Action from "../components/Action";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,11 +76,12 @@ const AddUserButton = () => {
         className={classes.emailField}
         placeholder="Type an email address"
       />
-      <Tooltip title="Click to add this user to the application administration">
-        <IconButton onClick={handleClick} size="small">
-          <Icon className={classes.icon}>add</Icon>
-        </IconButton>
-      </Tooltip>
+      <Action
+        icon="add"
+        onClick={handleClick}
+        tooltip="Click to add this user to the application administration"
+        iconButtonProps={{ size: "small", style: { color: "white" } }}
+      />
     </Box>
   );
 };

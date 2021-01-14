@@ -6,7 +6,7 @@ const useStyles = makeStyles(() => ({
   container: {
     height: 64,
     border: "2px white dashed",
-    margin: 16,
+    margin: "0 24px",
     borderRadius: 4,
     cursor: "pointer",
     display: "flex",

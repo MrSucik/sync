@@ -58,7 +58,13 @@ const ScenesList = () => {
     enqueueSnackbar("Scene name updated", { variant: "success" });
   };
   const handlePreviewClick = (mediaList: string[]) => {
-    dispatch(setPreviewMediaList(mediaList));
+    if (mediaList.length < 1) {
+      enqueueSnackbar("Cannot preview scene without any media", {
+        variant: "error",
+      });
+    } else {
+      dispatch(setPreviewMediaList(mediaList));
+    }
   };
   return (
     <>

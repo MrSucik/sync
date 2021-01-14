@@ -84,8 +84,6 @@ const BakalariConfigurationForm: React.FC<Props> = ({ type, onClose }) => {
     );
     onClose();
   };
-  console.log(data.planDate);
-
   return (
     <Box style={{ backgroundColor: "#fff" }}>
       <Box className={classes.container}>

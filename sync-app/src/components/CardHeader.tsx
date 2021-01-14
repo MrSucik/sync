@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import {
   Box,
-  Icon,
-  IconButton,
+  IconButtonProps,
   makeStyles,
   TextField,
   Typography,
 } from "@material-ui/core";
-import Tooltip from "./Tooltip";
 import ChooseChip from "./ChooseChip";
 import clsx from "clsx";
+import Action from "./Action";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -45,6 +44,11 @@ interface Props {
   sideMargin?: boolean;
 }
 
+const iconButtonProps: IconButtonProps = {
+  color: "inherit",
+  size: "small",
+};
+
 const CardHeader: React.FC<Props> = ({
   title = "",
   onChangeTitle,
@@ -73,28 +77,22 @@ const CardHeader: React.FC<Props> = ({
               value={titleInputValue}
               onChange={(event) => setTitleInputValue(event.target.value)}
             />
-
-            <IconButton
+            <Action
+              icon="done"
+              iconButtonProps={iconButtonProps}
               onClick={handleConfirmClick}
-              size="small"
-              color="inherit"
-            >
-              <Icon>done</Icon>
-            </IconButton>
+            />
           </>
         ) : (
           <>
             <Typography variant="button">{title}</Typography>
             {onChangeTitle && (
-              <Tooltip title="Rename">
-                <IconButton
-                  onClick={handleEditClick}
-                  size="small"
-                  color="inherit"
-                >
-                  <Icon fontSize="small">edit</Icon>
-                </IconButton>
-              </Tooltip>
+              <Action
+                onClick={handleEditClick}
+                tooltip="Rename"
+                icon="edit"
+                iconButtonProps={iconButtonProps}
+              />
             )}
             <ChooseChip onCancelChoosing={onCancelChoosing} />
           </>
@@ -104,16 +102,13 @@ const CardHeader: React.FC<Props> = ({
       <Box display="flex">
         {actions?.length
           ? actions.map(({ icon, tooltip, onClick }, index) => (
-              <Tooltip key={index} title={tooltip}>
-                <IconButton
-                  onClick={onClick}
-                  color="inherit"
-                  size="small"
-                  style={{ padding: 4 }}
-                >
-                  <Icon>{icon}</Icon>
-                </IconButton>
-              </Tooltip>
+              <Action
+                key={index}
+                tooltip={tooltip}
+                onClick={onClick}
+                icon={icon}
+                iconButtonProps={iconButtonProps}
+              />
             ))
           : null}
       </Box>

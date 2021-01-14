@@ -3,16 +3,14 @@ import {
   ListItem as MuiListItem,
   ListItemAvatar,
   ListItemSecondaryAction,
-  IconButton,
-  Icon,
   createStyles,
   makeStyles,
   Theme,
   LinearProgress,
 } from "@material-ui/core";
-import Tooltip from "./Tooltip";
 import clsx from "clsx";
 import Glowing from "./Glowing";
+import Action from "./Action";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -113,15 +111,13 @@ const ListItem = forwardRef<any, Props>(
         )}
         <ListItemSecondaryAction>
           {actions.map(({ icon, tooltip, onClick: actionOnClick }, index) => (
-            <Tooltip key={index} title={tooltip}>
-              <IconButton
-                disabled={disabled}
-                size="small"
-                onClick={actionOnClick}
-              >
-                <Icon>{icon}</Icon>
-              </IconButton>
-            </Tooltip>
+            <Action
+              key={index}
+              icon={icon}
+              tooltip={tooltip}
+              onClick={actionOnClick}
+              iconButtonProps={{ disabled, size: "small" }}
+            />
           ))}
         </ListItemSecondaryAction>
       </MuiListItem>

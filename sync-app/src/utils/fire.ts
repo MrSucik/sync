@@ -25,8 +25,7 @@ export const getDownloadURL = (fileName: string) =>
 
 export const uploadFile = async (file: File) => {
   const fileName = uuidv4() + file.name;
-  const metadata = { contentType: file.type };
-  await storage.ref().child(fileName).put(file, metadata);
+  await storage.ref().child(fileName).put(file);
   return fileName;
 };
 
@@ -37,6 +36,8 @@ export const createNewScene = () =>
     created: firebase.firestore.FieldValue.serverTimestamp(),
   });
 
+const randomColor = () => "#" + (((1 << 24) * Math.random()) | 0).toString(16);
+
 export const createNewMedia = (
   name: string,
   duration: string,
@@ -44,7 +45,7 @@ export const createNewMedia = (
 ) =>
   firestore.collection("media").add({
     created: firebase.firestore.FieldValue.serverTimestamp(),
-    color: "blue",
+    color: randomColor(),
     duration,
     name: name || "New Media",
     source: remoteFileName,
