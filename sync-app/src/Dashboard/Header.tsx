@@ -6,10 +6,9 @@ import {
   makeStyles,
   Theme,
   Toolbar,
-  Typography,
 } from "@material-ui/core";
-import LogoutButton from "../Authorization/LogoutButton";
-import UsersAdministrationIconButton from "../Users/UsersAdministrationIconButton";
+import Title from "../components/Title";
+import HeaderButtons from "./HeaderButtons";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,24 +24,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Header = () => {
+const Header: React.FC = ({ children }) => {
   const classes = useStyles();
   return (
     <>
       <Box className={classes.placeholder} />
       <AppBar className={classes.container}>
         <Toolbar color="primary" className={classes.toolbar}>
-          <Typography
-            style={{ fontFamily: "'B612 Mono', monospace" }}
-            variant="h4"
-            component="h1"
-          >
-            sync
-          </Typography>
-          <Box display="flex">
-            <UsersAdministrationIconButton />
-            <LogoutButton />
-          </Box>
+          <Title />
+          {children}
+          <HeaderButtons />
         </Toolbar>
       </AppBar>
     </>

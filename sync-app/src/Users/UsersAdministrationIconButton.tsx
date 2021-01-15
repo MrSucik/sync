@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import Action from "../components/Action";
-import { setUserAdministrationOpen } from "../store/slices/app";
+import { setUserAdministrationOpen } from "../store/slices/settings";
 
 const UsersAdministrationIconButton = () => {
   const dispatch = useDispatch();

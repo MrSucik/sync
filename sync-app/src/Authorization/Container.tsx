@@ -1,39 +1,22 @@
 import React from "react";
-import { Box, makeStyles, Theme } from "@material-ui/core";
-import Card from "../components/Card";
-import CardHeader from "../components/CardHeader";
+import { Box, makeStyles } from "@material-ui/core";
+import Header from "../Dashboard/Header";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
+    background: "url('./backgrounds/login.jpg')",
+    backgroundSize: "cover",
     height: "100vh",
-    display: "flex",
-    alignItems: "center",
-  },
-  innerContainer: {
-    width: 800,
-    margin: "auto",
-  },
-  backgroundImage: (props: { backgroundImage: string }) => ({
-    width: 800,
-    height: 600,
-    background: `url("${props.backgroundImage}")`,
     position: "relative",
-  }),
+  },
 }));
 
-interface Props {
-  title: string;
-  backgroundImage: string;
-}
-
-const Container: React.FC<Props> = ({ title, backgroundImage, children }) => {
-  const classes = useStyles({ backgroundImage });
+const Container: React.FC = ({ children }) => {
+  const classes = useStyles();
   return (
     <Box className={classes.container}>
-      <Card outerBoxProps={{ className: classes.innerContainer }}>
-        <CardHeader title={title} />
-        <Box className={classes.backgroundImage}>{children}</Box>
-      </Card>
+      <Header />
+      {children}
     </Box>
   );
 };

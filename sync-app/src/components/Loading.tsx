@@ -1,32 +1,22 @@
 import React from "react";
-import { Box } from "@material-ui/core";
-
-const url =
-  "https://cdn.dribbble.com/users/1849053/screenshots/7133321/media/39455ee14562332c4e378ed1c5d5694a.gif";
+import { Box, CircularProgress } from "@material-ui/core";
 
 interface Props {
-  opacity?: number;
+  color?: "primary" | "secondary" | "inherit";
 }
 
-const Loading: React.FC<Props> = ({ opacity = 0.3 }) => {
-  return (
-    <Box
-      style={{
-        opacity,
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <img
-        style={{ maxWidth: "100%", maxHeight: "100%" }}
-        src={url}
-        alt="loading"
-      />
-    </Box>
-  );
-};
+const Loading: React.FC<Props> = ({ color = "inherit" }) => (
+  <Box
+    style={{
+      position: "absolute",
+      transform: "translate(-50%, -50%)",
+      top: "50%",
+      left: "50%",
+      color: "white",
+    }}
+  >
+    <CircularProgress color={color} />
+  </Box>
+);
 
 export default Loading;

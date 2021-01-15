@@ -1,32 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { FirebaseReducer, useFirestore } from "react-redux-firebase";
-import { RootState } from "../store";
+import React from "react";
+import { Box, makeStyles } from "@material-ui/core";
+import Container from "./Container";
+import LoginButton from "./LoginButton";
+import { useAuthorization } from "./useAuthorization";
 import Dashboard from "../Dashboard/Dashboard";
-import Unauthorized from "./Unauthorized";
 import Loading from "../components/Loading";
 
-const Authorization = () => {
-  const auth = useSelector<RootState, FirebaseReducer.AuthState>(
-    (state) => state.firebase.auth
+const useStyles = makeStyles(() => ({
+  buttonContainer: {
+    transform: "translate(-50%, -50%)",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+  },
+}));
+
+const Authorization: React.FC = () => {
+  const classes = useStyles();
+  const { loading, authorized } = useAuthorization();
+  return loading ? (
+    <Loading />
+  ) : authorized ? (
+    <Dashboard />
+  ) : (
+    <Container>
+      <Box className={classes.buttonContainer}>
+        <LoginButton />
+      </Box>
+    </Container>
   );
-  const [loading, setLoading] = useState(true);
-  const [authorized, setAuthorized] = useState(false);
-  const firestore = useFirestore();
-  useEffect(() => {
-    if (auth.isEmpty) {
-      return;
-    }
-    firestore
-      .collection("users")
-      .get()
-      .then((users) =>
-        setAuthorized(
-          Boolean(users.docs.find((x) => x.id === auth.email)?.exists)
-        )
-      )
-      .finally(() => setLoading(false));
-  }, [auth, firestore]);
-  return loading ? <Loading /> : authorized ? <Dashboard /> : <Unauthorized />;
 };
+
 export default Authorization;

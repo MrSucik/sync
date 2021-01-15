@@ -4,10 +4,7 @@ import Action from "../components/Action";
 
 const LogoutButton = () => {
   const firebase = useFirebase();
-  const handleClick = async () => {
-    const auth = firebase.auth();
-    await auth.signOut();
-  };
+  const handleClick = () => firebase.auth().signOut();
   return (
     <Action
       tooltip="Sign out"
