@@ -1,5 +1,5 @@
 import React from "react";
-import { ListItemText } from "@material-ui/core";
+import { CircularProgress, ListItemText } from "@material-ui/core";
 import ListItem from "../components/ListItem";
 import Avatar from "../components/Avatar";
 import { MediaModel } from "../definitions";
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const SceneMediaListItem: React.FC<Props> = ({
-  media: { id, color, duration, name, source, progress },
+  media: { id, color, duration, name, thumbnail, progress },
   index,
   onRemove,
 }) => {
@@ -27,7 +27,13 @@ const SceneMediaListItem: React.FC<Props> = ({
           <ListItem
             color={color}
             progress={progress}
-            avatar={<Avatar alt={name} source={source} />}
+            avatar={
+              thumbnail ? (
+                <Avatar alt={name} source={thumbnail} />
+              ) : (
+                <CircularProgress size={32} />
+              )
+            }
             body={
               <ListItemText primary={name} secondary={`${duration} seconds`} />
             }

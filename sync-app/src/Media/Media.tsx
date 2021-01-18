@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Card from "../components/Card";
 import CardHeader from "../components/CardHeader";
 import MediaListItem from "./MediaListItem";
-import UploadMediaModal from "./UploadMediaModal";
-import { setMediaModalState, setChoosingMedia } from "../store/slices/app";
+import UploadMediaModal from "./UpdateModal/UploadMediaModal";
+import { setChoosingMedia } from "../store/slices/app";
 import BakalariConfigurationModal from "./BakalariConfiguration/BakalariConfigurationModal";
 import { RootState } from "../store";
 import { List } from "@material-ui/core";
 import { MediaModel } from "../definitions";
+import { setUpdateMediaModalState } from "../store/slices/media";
 
 const Media = () => {
   const dispatch = useDispatch();
@@ -21,10 +22,8 @@ const Media = () => {
   const mediaList = useSelector<RootState, MediaModel[]>(
     (state) => state.firestore.ordered.media
   );
-  const handleClick = () => dispatch(setMediaModalState("create"));
-  const handleCancelChoosing = () => {
-    dispatch(setChoosingMedia(null));
-  };
+  const handleClick = () => dispatch(setUpdateMediaModalState("create"));
+  const handleCancelChoosing = () => dispatch(setChoosingMedia(null));
   return (
     <>
       <BakalariConfigurationModal />

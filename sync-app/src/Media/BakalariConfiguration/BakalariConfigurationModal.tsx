@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Card from "../../components/Card";
 import CardHeader from "../../components/CardHeader";
 import { RootState } from "../../store";
-import { setConfigureMediaModalOpen } from "../../store/slices/app";
+import { setConfigureMediaModalOpen } from "../../store/slices/media";
 import BakalariConfigurationForm from "./BakalariConfigurationForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -20,7 +20,7 @@ const BakalariConfigurationModal = () => {
   const modalState = useSelector<
     RootState,
     "bakalari-suplovani" | "bakalari-plan-akci" | "closed"
-  >((state) => state.app.configureMediaModalState);
+  >((state) => state.media.configureMediaModalState);
   const dispatch = useDispatch();
   const handleClose = () => dispatch(setConfigureMediaModalOpen("closed"));
   return (

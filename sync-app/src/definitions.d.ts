@@ -10,6 +10,7 @@ export interface MediaModel extends FirestoreDocument {
   created: Timestamp;
   ready: boolean;
   progress: number;
+  thumbnail: string;
   name: string;
   duration: number;
   source: string;

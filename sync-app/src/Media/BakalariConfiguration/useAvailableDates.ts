@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import superagent from "superagent";
 import { RootState } from "../../store";
-import { ConfigureMediaModalState } from "../../store/slices/app";
+import { ConfigureMediaModalState } from "../../store/slices/media";
 
 const endpoints = {
   "bakalari-suplovani":
@@ -13,7 +13,7 @@ const endpoints = {
 
 export const useAvailableDates = () => {
   const type = useSelector<RootState, ConfigureMediaModalState>(
-    (state) => state.app.configureMediaModalState
+    (state) => state.media.configureMediaModalState
   );
   const [dates, setDates] = useState<string[]>([]);
   useEffect(() => {

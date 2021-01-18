@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
@@ -20,13 +19,13 @@ export const auth = app.auth();
 export const storage = app.storage();
 export const performance = app.performance();
 
-export const getDownloadURL = (fileName: string) =>
-  storage.ref(`/${fileName}`).getDownloadURL();
+export const getDownloadURL = (path: string) =>
+  storage.ref(path).getDownloadURL();
 
 export const uploadFile = async (file: File) => {
-  const fileName = uuidv4() + file.name;
-  await storage.ref().child(fileName).put(file);
-  return fileName;
+  const path = `uploads/${file.name}`;
+  await storage.ref().child(path).put(file);
+  return path;
 };
 
 export const createNewScene = () =>
@@ -41,14 +40,15 @@ const randomColor = () => "#" + (((1 << 24) * Math.random()) | 0).toString(16);
 export const createNewMedia = (
   name: string,
   duration: string,
-  remoteFileName: string
+  source: string
 ) =>
   firestore.collection("media").add({
     created: firebase.firestore.FieldValue.serverTimestamp(),
     color: randomColor(),
     duration,
     name: name || "New Media",
-    source: remoteFileName,
-    type: "image",
+    originalSource: source,
+    // TODO: create mapping logic
+    type: source.endsWith("mp4") ? "video" : "image",
     ready: false,
   });

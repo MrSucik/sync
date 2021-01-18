@@ -1,30 +1,27 @@
 import React from "react";
-import { ListItemText } from "@material-ui/core";
+import { CircularProgress, ListItemText } from "@material-ui/core";
 import ListItem from "../components/ListItem";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { MediaModel, SceneModel } from "../definitions";
 import { useFirestore } from "react-redux-firebase";
-import {
-  setChoosingMedia,
-  setConfigureMediaModalOpen,
-  setMediaModalState,
-} from "../store/slices/app";
+import { setChoosingMedia } from "../store/slices/app";
 import { useSnackbar } from "notistack";
 import Avatar from "../components/Avatar";
+import {
+  setConfigureMediaModalOpen,
+  setUpdateMediaModalState,
+} from "../store/slices/media";
 
 interface Props {
   media: MediaModel;
 }
 
 const MediaListItem: React.FC<Props> = ({
-  media: { color, duration, id, name, source, configurable, progress },
+  media: { color, duration, id, name, thumbnail, configurable, progress },
 }) => {
   const scenes = useSelector<RootState, SceneModel[]>(
     (state) => state.firestore.ordered.scenes
-  );
-  const choosingScene = useSelector<RootState, string | null>(
-    (state) => state.app.choosingScene
   );
   const choosingMediaSceneId = useSelector<RootState, string | null>(
     (state) => state.app.choosingMedia
@@ -59,12 +56,9 @@ const MediaListItem: React.FC<Props> = ({
   };
   const handleConfigureClick = (
     id: "bakalari-suplovani" | "bakalari-plan-akci"
-  ) => {
-    dispatch(setConfigureMediaModalOpen(id));
-  };
-  const handleEditClick = (id: string) => {
-    dispatch(setMediaModalState(id));
-  };
+  ) => dispatch(setConfigureMediaModalOpen(id));
+  const handleEditClick = (id: string) =>
+    dispatch(setUpdateMediaModalState(id));
   return (
     <ListItem
       progress={progress}
@@ -72,10 +66,16 @@ const MediaListItem: React.FC<Props> = ({
         Boolean(choosingMediaSceneId) && !choosingMediaList.includes(id)
       }
       onClick={choosingMediaSceneId ? () => handleClick(id) : undefined}
-      avatar={<Avatar alt={name} source={source} />}
+      avatar={
+        thumbnail ? (
+          <Avatar alt={name} source={thumbnail} />
+        ) : (
+          <CircularProgress size={32} />
+        )
+      }
       body={<ListItemText primary={name} secondary={`${duration} seconds`} />}
       color={color}
-      disabled={choosingMediaList.includes(id) || Boolean(choosingScene)}
+      disabled={choosingMediaList.includes(id)}
       actions={
         configurable
           ? [

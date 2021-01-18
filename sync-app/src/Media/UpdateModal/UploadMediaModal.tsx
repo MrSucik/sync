@@ -1,10 +1,11 @@
 import { Modal, Paper, createStyles, makeStyles } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import CardHeader from "../components/CardHeader";
-import { MediaModel } from "../definitions";
-import { RootState } from "../store";
-import { ModalState, setMediaModalState } from "../store/slices/app";
+import CardHeader from "../../components/CardHeader";
+import { MediaModel } from "../../definitions";
+import { RootState } from "../../store";
+import { ModalState } from "../../store/slices/app";
+import { setUpdateMediaModalState } from "../../store/slices/media";
 import AddMediaForm from "./AddMediaForm";
 
 const useStyles = makeStyles(() =>
@@ -20,13 +21,13 @@ const useStyles = makeStyles(() =>
 const UploadMediaModal = () => {
   const classes = useStyles();
   const modalState = useSelector<RootState, ModalState>(
-    (state) => state.app.mediaModalState
+    (state) => state.media.updateMediaModalState
   );
   const updateMedia = useSelector<RootState, MediaModel | null>(
     (state) => state.firestore.data.media[modalState]
   );
   const dispatch = useDispatch();
-  const handleClose = () => dispatch(setMediaModalState("closed"));
+  const handleClose = () => dispatch(setUpdateMediaModalState("closed"));
   return (
     <Modal open={modalState !== "closed"} onClose={handleClose}>
       <Paper className={classes.container}>

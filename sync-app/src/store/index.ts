@@ -17,17 +17,23 @@ import {
 } from "redux-firestore";
 import firebase from "firebase/app";
 import appReducer, { AppState } from "./slices/app";
+import mediaReducer, { MediaState } from "./slices/media";
+import settingsReducer, { SettingsState } from "./slices/settings";
+import authReducer, { AuthState } from "./slices/auth";
 
 const rootReducer = combineReducers({
   firestore: firestoreReducer,
   firebase: firebaseReducer,
   app: appReducer,
+  media: mediaReducer,
+  settings: settingsReducer,
+  auth: authReducer,
 });
 
 const middleware = getDefaultMiddleware({
   serializableCheck: {
     ignoredActions: [
-      // just ignore every redux-firebase and react-redux-firebase action type
+      // ignore every redux-firebase and react-redux-firebase action type
       ...Object.keys(rfConstants.actionTypes).map(
         (type) => `${rfConstants.actionsPrefix}/${type}`
       ),
@@ -49,6 +55,9 @@ export type RootState = CombinedState<{
   firestore: FirestoreReducer.Reducer;
   firebase: FirebaseReducer.Reducer;
   app: AppState;
+  auth: AuthState;
+  settings: SettingsState;
+  media: MediaState;
 }>;
 
 export default store;
