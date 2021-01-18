@@ -41,6 +41,12 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: props.clickable ? "pointer" : undefined,
       background: theme.palette.common.white,
     }),
+    progress: {
+      position: "absolute",
+      inset: 0,
+      height: "100%",
+      opacity: 0.2,
+    },
   })
 );
 
@@ -98,12 +104,7 @@ const ListItem = forwardRef<any, Props>(
         {body}
         {progress && progress < 100 && (
           <LinearProgress
-            style={{
-              position: "absolute",
-              inset: 0,
-              height: "100%",
-              opacity: 0.2,
-            }}
+            className={classes.progress}
             variant="determinate"
             value={progress}
             color="primary"

@@ -17,7 +17,7 @@ const Card: React.FC<Props> = forwardRef<any, Props>(
         // @ts-ignore
         ref={ref}
         flex={1}
-        margin={1}
+        margin={3}
         marginBottom={3}
         {...outerBoxProps}
       >
@@ -27,6 +27,8 @@ const Card: React.FC<Props> = forwardRef<any, Props>(
             backgroundColor: fill ? "rgb(66, 96, 143)" : "transparent",
             cursor: clickable ? "pointer" : "auto",
             borderRadius: 4,
+            overflow: "auto",
+            paddingTop: fill ? 0 : 8,
           }}
         >
           {clickable && <Glowing />}

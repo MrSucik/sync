@@ -12,9 +12,7 @@ const Device = () => {
     Boolean(state.app.choosingMedia)
   );
   const dispatch = useDispatch();
-  const handleAddDeviceClick = () => {
-    dispatch(setDeviceModalState("create"));
-  };
+  const handleAddDeviceClick = () => dispatch(setDeviceModalState("create"));
   return (
     <Card disabled={isOtherChoosing}>
       <CardHeader

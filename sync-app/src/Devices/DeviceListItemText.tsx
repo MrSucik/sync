@@ -13,8 +13,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     online: {
       marginRight: 8,
-      backgroundColor: theme.palette.success.main,
-      color: theme.palette.success.contrastText,
+      backgroundColor: theme.palette.success.light,
+      color: theme.palette.common.white,
     },
     offline: {
       marginRight: 8,

@@ -9,8 +9,12 @@ import { createNewScene } from "../utils/fire";
 const Scenes = () => {
   const { enqueueSnackbar } = useSnackbar();
   const handleAddScene = async () => {
-    await createNewScene();
-    enqueueSnackbar("Scene added successfully", { variant: "success" });
+    try {
+      await createNewScene();
+      enqueueSnackbar("Scene added successfully", { variant: "success" });
+    } catch {
+      enqueueSnackbar("Failed to add a new scene", { variant: "error" });
+    }
   };
   return (
     <Box flex={2}>

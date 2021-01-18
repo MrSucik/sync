@@ -9,7 +9,7 @@ import Tooltip from "./Tooltip";
 
 interface Props {
   icon: string;
-  onClick: () => void;
+  onClick?: () => void;
   tooltip?: string;
   iconButtonProps?: IconButtonProps;
   iconProps?: IconProps;
@@ -17,7 +17,7 @@ interface Props {
 
 const Action: React.FC<Props> = ({
   icon,
-  onClick,
+  onClick = () => {},
   tooltip,
   iconButtonProps,
   iconProps,

@@ -7,5 +7,6 @@ export const useTimeout = (timeSeconds: number, onTimeoutEnded: () => void) => {
     timeout.current = setTimeout(() => {
       onTimeoutEnded();
     }, timeSeconds * 1000);
+    return () => clearTimeout(timeout.current);
   }, [onTimeoutEnded, timeSeconds]);
 };

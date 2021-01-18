@@ -5,6 +5,7 @@ import {
   TextField,
   CircularProgress,
 } from "@material-ui/core";
+import { icons } from "../icons/icons.json";
 import React, { useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import Button from "../components/Button";
@@ -41,7 +42,7 @@ const UpdateDeviceForm: React.FC = () => {
   );
   const dispatch = useDispatch();
   const [name, setName] = useState<string>(updateDevice?.name || "");
-  const [icon, setIcon] = useState<string>(updateDevice?.icon || "");
+  const [icon, setIcon] = useState<string>(updateDevice?.icon || icons[0]);
   const handleUpdate = async () => {
     try {
       await firestore.update(
@@ -75,8 +76,12 @@ const UpdateDeviceForm: React.FC = () => {
     }
   };
   const handleSubmit = async () => {
-    setLoading(true);
-    updateDevice ? handleUpdate() : handleSave();
+    try {
+      setLoading(true);
+      updateDevice ? handleUpdate() : handleSave();
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Box style={{ backgroundColor: "#fff" }}>

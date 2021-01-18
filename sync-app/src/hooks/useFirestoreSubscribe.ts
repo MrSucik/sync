@@ -11,12 +11,12 @@ export const useFirestoreSubscribe = () => {
     { collection: "users" },
   ]);
   const dataLoaded = useSelector<RootState, boolean>(
-    (state) =>
-      Array.isArray(state.firestore.ordered.clients) &&
-      Array.isArray(state.firestore.ordered.media) &&
-      Array.isArray(state.firestore.ordered.scenes) &&
-      Array.isArray(state.firestore.ordered.configuration) &&
-      Array.isArray(state.firestore.ordered.users)
+    ({ firestore: { ordered } }) =>
+      Array.isArray(ordered.clients) &&
+      Array.isArray(ordered.media) &&
+      Array.isArray(ordered.scenes) &&
+      Array.isArray(ordered.configuration) &&
+      Array.isArray(ordered.users)
   );
   return dataLoaded;
 };

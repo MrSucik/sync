@@ -40,7 +40,7 @@ const Media = () => {
         <UploadMediaModal />
         <List disablePadding>
           {mediaList.map((media) => (
-            <MediaListItem media={media} />
+            <MediaListItem key={media.id} media={media} />
           ))}
         </List>
       </Card>

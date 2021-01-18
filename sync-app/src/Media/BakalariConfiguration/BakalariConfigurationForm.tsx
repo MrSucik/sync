@@ -89,7 +89,7 @@ const BakalariConfigurationForm: React.FC<Props> = ({ type, onClose }) => {
       <Box className={classes.container}>
         {dates.length < 1 ? (
           <Box position="relative" height={170}>
-            <Loading opacity={1} />
+            <Loading color="primary" />
           </Box>
         ) : type === "bakalari-suplovani" ? (
           <>
