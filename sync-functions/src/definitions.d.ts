@@ -18,6 +18,7 @@ interface MediaModel {
   source: string;
   type: string;
   color: string;
+  originalSource: string;
   ready: boolean;
   configurable?: boolean;
 }
@@ -31,6 +32,6 @@ export interface ConfigurationModel {
 }
 
 export interface ConversionResult {
-  name: string;
+  source: string;
   type: "image" | "video";
 }

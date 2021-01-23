@@ -1,16 +1,16 @@
 import * as puppeteer from "puppeteer";
 import * as moment from "moment";
-import { processLocalImage, tempFilePath } from "./utils";
+import { tempFilePath } from "./utils";
 import { bakaSuplRoute, bakaSuffix, bakaPlanRoute } from "./constants";
+import { firestore, getConfiguration } from "./fire";
 
 const removeNewLines = (input: string) => input.replace(/\r?\n|\r/g, "");
-const croppingLimit = 2048;
 
 const defaultOptions = {
   headless: true,
   args: ["--no-sandbox"],
   defaultViewport: {
-    width: croppingLimit / 2,
+    width: 1080,
     height: 100,
     deviceScaleFactor: 2,
   },
@@ -40,7 +40,7 @@ export const initialize = async () => {
   return page;
 };
 
-export const scrapeSupl = async (page: puppeteer.Page, date: moment.Moment) => {
+const scrapeSupl = async (page: puppeteer.Page, date: moment.Moment) => {
   await page.goto(bakaSuplRoute + getUrl(moment(date)) + bakaSuffix);
   const html = await page.evaluate(() => {
     let tables = "";
@@ -51,12 +51,10 @@ export const scrapeSupl = async (page: puppeteer.Page, date: moment.Moment) => {
       ? Promise.resolve(tables)
       : Promise.reject("Cannot find baka supl page!");
   });
-  const name = "bakalari-suplovani.png";
-  const localPath = await takeScreenshot(page, html, name);
-  return await processLocalImage(localPath);
+  return await takeScreenshot(page, html, "bakalari-suplovani.png");
 };
 
-export const scrapePlan = async (page: puppeteer.Page, date: moment.Moment) => {
+const scrapePlan = async (page: puppeteer.Page, date: moment.Moment) => {
   const nearMonday = moment(date).startOf("isoWeek");
   await page.goto(bakaPlanRoute + getUrl(nearMonday) + bakaSuffix);
   const html = await page.evaluate(() => {
@@ -67,9 +65,7 @@ export const scrapePlan = async (page: puppeteer.Page, date: moment.Moment) => {
   });
   const EVIL = /<tr>    <td class="td_div_1" width="100%" colspan="4" &nbsp;<="" td="">  <\/td><\/tr>/g;
   const parsedHtml = removeNewLines(html).replace(EVIL, "");
-  const name = "bakalari-plan-akci.png";
-  const localPath = await takeScreenshot(page, parsedHtml, name);
-  return await processLocalImage(localPath);
+  return await takeScreenshot(page, parsedHtml, "bakalari-plan-akci.png");
 };
 
 export const getAvailableDates = async (page: puppeteer.Page) => {
@@ -81,3 +77,33 @@ export const getAvailableDates = async (page: puppeteer.Page) => {
 };
 
 const getUrl = (date: moment.Moment) => moment(date).format("YYMMDD");
+
+export const exportCurrentBakalari = async () => {
+  const configuration = await getConfiguration();
+  const planDate = configuration.autoPlanDate
+    ? moment()
+    : moment(configuration.planDate.toDate()).add(1, "hour");
+  const suplDate = configuration.autoSuplDate
+    ? moment()
+    : moment(configuration.suplDate.toDate()).add(1, "hour");
+  const page = await initialize();
+  const planResult = await scrapePlan(page, moment(planDate));
+  const suplResult = await scrapeSupl(page, moment(suplDate));
+  await updateBakaMedia(suplResult, planResult);
+};
+
+export const updateBakaMedia = async (
+  suplConversionResult: string,
+  planConversionResult: string
+) => {
+  await firestore.doc("media/bakalari-plan-akci").update({
+    originalSource: planConversionResult,
+    type: "image",
+    ready: false,
+  });
+  await firestore.doc("media/bakalari-suplovani").update({
+    originalSource: suplConversionResult,
+    type: "image",
+    ready: false,
+  });
+};

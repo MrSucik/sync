@@ -1,71 +1,53 @@
 import * as functions from "firebase-functions";
-import * as moment from "moment";
-import { initialize, getAvailableDates, scrapePlan, scrapeSupl } from "./baka";
+import * as path from "path";
+import { initialize, getAvailableDates, exportCurrentBakalari } from "./baka";
 import { bakaSuplDatesRoute, bakaPlanDatesRoute } from "./constants";
-import { MediaModel } from "./definitions";
-import {
-  app,
-  firestore,
-  getConfiguration,
-  processImage,
-  updateBakaMedia,
-  userExists,
-} from "./utils";
+import { app, firestore, userExists } from "./fire";
+import { processMedia } from "./utils";
+
+export const onBakalariConfigurationCreate = functions
+  .runWith({ memory: "2GB", timeoutSeconds: 120 })
+  .region("europe-west3")
+  .firestore.document("configuration/{configurationId}")
+  .onCreate(exportCurrentBakalari);
 
 export const onScheduledBakalariScraping = functions
   .region("europe-west3")
   .runWith({ memory: "2GB", timeoutSeconds: 120 })
-  .pubsub.schedule("every 5 minutes")
-  .onRun(async () => {
-    const configuration = await getConfiguration();
-    const planDate = configuration.autoPlanDate
-      ? moment()
-      : moment(configuration.planDate.toDate()).add(1, "hour");
-    const suplDate = configuration.autoSuplDate
-      ? moment()
-      : moment(configuration.suplDate.toDate()).add(1, "hour");
-    const page = await initialize();
-    functions.logger.log(configuration, planDate, suplDate);
-    const planResult = await scrapePlan(page, moment(planDate));
-    const suplResult = await scrapeSupl(page, moment(suplDate));
-    await updateBakaMedia(suplResult, planResult);
-  });
+  .pubsub.schedule("every 30 minutes")
+  .onRun(exportCurrentBakalari);
 
-export const onClientStatusChanged = functions.database
-  .ref("/status/{uid}")
-  .onUpdate(async (change, context) => {
-    const eventStatus = change.after.val();
-    const userStatusFirestoreRef = firestore
-      .collection("clients")
-      .doc(context.params.uid);
-    const statusSnapshot = await change.after.ref.once("value");
-    const status = statusSnapshot.val();
-    return status.last_changed > eventStatus.last_changed
-      ? null
-      : userStatusFirestoreRef.update({ status: eventStatus.state });
-  });
-
-export const onMediaCreated = functions
+export const onMediaUpdated = functions
+  .region("europe-west3")
   .runWith({ memory: "2GB", timeoutSeconds: 300 })
   .firestore.document("media/{mediaId}")
-  .onCreate(async (snapshot) => {
-    const data = snapshot.data() as MediaModel;
-    if (data.ready) {
+  .onUpdate(async (snapshot) => {
+    const oldData = snapshot.before.data();
+    const newData = snapshot.after.data();
+    const update = snapshot.after.ref.update;
+    if (
+      !newData.progress &&
+      (newData.ready || oldData?.originalSource === newData.originalSource)
+    ) {
       return;
     }
-    const originalSource = data.source;
-    const { name: convertedFileName, type } = await processImage(
-      originalSource
+    const { name } = path.parse(newData.originalSource);
+    const handleProgress = (progress: number) =>
+      update({ progress: parseInt(progress.toFixed()) });
+    const { source, type, thumbnail } = await processMedia(
+      name,
+      newData.originalSource,
+      handleProgress
     );
-    await snapshot.ref.update({
-      source: convertedFileName,
+    await update({
+      source,
       type,
       ready: true,
-      originalSource,
+      thumbnail,
     });
   });
 
-const createAvailableDatesFunction = (url: string) =>
+const createAvailableDatesHandler = (url: string) =>
   functions
     .region("europe-west3")
     .runWith({ memory: "1GB" })
@@ -77,11 +59,11 @@ const createAvailableDatesFunction = (url: string) =>
       response.send(dates);
     });
 
-export const availableBakaSuplDates = createAvailableDatesFunction(
+export const availableBakaSuplDates = createAvailableDatesHandler(
   bakaSuplDatesRoute
 );
 
-export const availableBakaPlanDates = createAvailableDatesFunction(
+export const availableBakaPlanDates = createAvailableDatesHandler(
   bakaPlanDatesRoute
 );
 
@@ -107,4 +89,19 @@ export const clientAccess = functions
       const token = await app.auth().createCustomToken(clientId);
       response.send(token);
     }
+  });
+
+export const onClientStatusChanged = functions
+  .region("europe-west3")
+  .database.ref("/status/{uid}")
+  .onUpdate(async (change, context) => {
+    const eventStatus = change.after.val();
+    const userStatusFirestoreRef = firestore
+      .collection("clients")
+      .doc(context.params.uid);
+    const statusSnapshot = await change.after.ref.once("value");
+    const status = statusSnapshot.val();
+    return status.last_changed > eventStatus.last_changed
+      ? null
+      : userStatusFirestoreRef.update({ status: eventStatus.state });
   });
