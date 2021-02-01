@@ -5,16 +5,17 @@ import Scenes from "../Scenes/Scenes";
 import Header from "./Header";
 import Loading from "../components/Loading";
 import Container from "./Container";
-import Preview from "../Preview/Preview";
 import { useFirestoreSubscribe } from "../hooks/useFirestoreSubscribe";
 import UsersModal from "../Users/UsersModal";
+import ScenePreview from "../Preview/ScenePreview";
 
 const Dashboard = () => {
   const dataLoaded = useFirestoreSubscribe();
+
   return dataLoaded ? (
     <>
       <UsersModal />
-      <Preview />
+      <ScenePreview />
       <Header />
       <Container>
         <Media />

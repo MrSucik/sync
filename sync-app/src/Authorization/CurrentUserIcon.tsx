@@ -10,10 +10,10 @@ const CurrentUserIcon = () => {
     (state) => state.firebase.auth
   );
   return (
-    <Tooltip title={email + ""}>
+    <Tooltip title={`Signed in as: ${email}`}>
       <Avatar
         style={{ width: 24, height: 24, alignSelf: "center" }}
-        src={photoURL + ""}
+        src={photoURL?.toString()}
       />
     </Tooltip>
   );

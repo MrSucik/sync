@@ -2,9 +2,6 @@ import React from "react";
 import { Box, makeStyles } from "@material-ui/core";
 import Container from "./Container";
 import LoginButton from "./LoginButton";
-import { useAuthorization } from "./useAuthorization";
-import Dashboard from "../Dashboard/Dashboard";
-import Loading from "../components/Loading";
 
 const useStyles = makeStyles(() => ({
   buttonContainer: {
@@ -17,12 +14,7 @@ const useStyles = makeStyles(() => ({
 
 const Authorization: React.FC = () => {
   const classes = useStyles();
-  const { loading, authorized } = useAuthorization();
-  return loading ? (
-    <Loading />
-  ) : authorized ? (
-    <Dashboard />
-  ) : (
+  return (
     <Container>
       <Box className={classes.buttonContainer}>
         <LoginButton />

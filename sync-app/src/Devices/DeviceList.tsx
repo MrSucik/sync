@@ -18,9 +18,6 @@ const DeviceList = () => {
   const choosingSceneClientId = useSelector<RootState, string | null>(
     (state) => state.app.choosingScene
   );
-  const choosingMediaSceneId = useSelector<RootState, string | null>(
-    (state) => state.app.choosingMedia
-  );
   const dispatch = useDispatch();
   const handleChangeScene = (id: string) => dispatch(setChoosingScene(id));
   const handleUpdateScene = (id: string) => dispatch(setDeviceModalState(id));
@@ -38,9 +35,7 @@ const DeviceList = () => {
             />
           }
           disabled={
-            choosingMediaSceneId || choosingSceneClientId
-              ? id !== choosingSceneClientId
-              : false
+            choosingSceneClientId ? id !== choosingSceneClientId : false
           }
           actions={[
             {

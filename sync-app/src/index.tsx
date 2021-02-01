@@ -11,27 +11,29 @@ import { theme } from "./utils/theme";
 import { SnackbarProvider } from "notistack";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <ReactReduxFirebaseProvider
-        firebase={firebase}
-        config={{}}
-        dispatch={store.dispatch}
-        createFirestoreInstance={createFirestoreInstance}
-      >
-        <SnackbarProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <App />
-            </MuiPickersUtilsProvider>
-          </ThemeProvider>
-        </SnackbarProvider>
-      </ReactReduxFirebaseProvider>
-    </Provider>
+    <BrowserRouter>
+      <Provider store={store}>
+        <ReactReduxFirebaseProvider
+          firebase={firebase}
+          config={{}}
+          dispatch={store.dispatch}
+          createFirestoreInstance={createFirestoreInstance}
+        >
+          <SnackbarProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <MuiPickersUtilsProvider utils={MomentUtils}>
+                <App />
+              </MuiPickersUtilsProvider>
+            </ThemeProvider>
+          </SnackbarProvider>
+        </ReactReduxFirebaseProvider>
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );
-

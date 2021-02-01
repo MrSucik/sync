@@ -1,15 +1,21 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "./store";
 import Authorization from "./Authorization/Authorization";
-import { FirebaseReducer } from "react-redux-firebase";
+import { Route, Switch } from "react-router-dom";
+import Dashboard from "./Dashboard/Dashboard";
+import { useAuthorization } from "./Authorization/useAuthorization";
 import Loading from "./components/Loading";
+import ClientPreview from "./Preview/ClientPreview";
 
 const App = () => {
-  const { isLoaded } = useSelector<RootState, FirebaseReducer.AuthState>(
-    (state) => state.firebase.auth
+  const { loading } = useAuthorization();
+  return loading ? (
+    <Loading />
+  ) : (
+    <Switch>
+      <Route exact path="/" component={Dashboard} />
+      <Route path="/auth" component={Authorization} />
+      <Route path="/preview/:clientId" component={ClientPreview} />
+    </Switch>
   );
-  return !isLoaded ? <Loading /> : <Authorization />;
 };
 
 export default App;

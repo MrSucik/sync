@@ -3,6 +3,7 @@ import "firebase/firestore";
 import "firebase/auth";
 import "firebase/storage";
 import "firebase/performance";
+import "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyABsnWKqt0FKYRwK2iII7B78k2YayeMfOw",

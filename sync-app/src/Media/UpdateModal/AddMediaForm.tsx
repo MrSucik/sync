@@ -31,7 +31,7 @@ const AddMediaForm: React.FC = () => {
   );
   useEffect(() => {
     if (updateMedia) {
-      dispatch(updateDuration(updateMedia.duration + ""));
+      dispatch(updateDuration(updateMedia.duration.toString()));
       dispatch(updateName(updateMedia.name));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,7 +61,7 @@ const AddMediaForm: React.FC = () => {
       await firestore.update(
         { collection: "media", doc: updateMediaId },
         // TODO: Fix type
-        { duration, name, originalSource: file, type: "image", ready: Boolean(file) }
+        { duration, name, originalSource: file, type: "image", ready: !Boolean(file) }
       );
       enqueueSnackbar("Media updated successfully", { variant: "success" });
     } catch {

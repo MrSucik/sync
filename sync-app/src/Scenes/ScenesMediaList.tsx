@@ -1,5 +1,5 @@
 import React from "react";
-import { List, ListItemText } from "@material-ui/core";
+import { List } from "@material-ui/core";
 import { Scene } from "../definitions";
 import { Droppable, DragDropContext, DropResult } from "react-beautiful-dnd";
 import SceneMediaListItem from "./SceneMediaListItem";
@@ -7,7 +7,7 @@ import { useFirestore } from "react-redux-firebase";
 import { setOptimisticReorderUpdate } from "../store/slices/app";
 import { useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
-import ListItem from "../components/ListItem";
+import EmptySceneMediaList from "./EmptySceneMediaList";
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
@@ -60,14 +60,7 @@ const ScenesMediaList: React.FC<Props> = ({ scene: { mediaList, id } }) => {
             {...provided.droppableProps}
           >
             {mediaList.length < 1 ? (
-              <ListItem
-                body={
-                  <ListItemText
-                    style={{ textAlign: "center" }}
-                    primary="This scene does not contain any media yet"
-                  />
-                }
-              />
+              <EmptySceneMediaList />
             ) : (
               mediaList.map((media, index) => (
                 <SceneMediaListItem
