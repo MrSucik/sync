@@ -3,7 +3,6 @@ import React from "react";
 import { MediaModel } from "../definitions";
 import { useDownloadURL } from "../hooks/useDownloadURL";
 import { useTimeout } from "../hooks/useTimeout";
-import Progress from "./Progress";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,23 +18,29 @@ const useStyles = makeStyles(() =>
 );
 
 interface Props {
+  visible: boolean;
   media: MediaModel;
   onMediaEnd: () => void;
 }
 
-const MediaPreview: React.FC<Props> = ({ media, onMediaEnd }) => {
+const MediaPreview: React.FC<Props> = ({ media, onMediaEnd, visible }) => {
   const classes = useStyles();
   useTimeout(media.duration, onMediaEnd);
   const downloadURL = useDownloadURL(media.source);
-  return (
-    <>
-      <Progress media={media} />
-      {media.type === "image" ? (
-        <img className={classes.media} src={downloadURL} alt={media.name} />
-      ) : (
-        <video className={classes.media} src={downloadURL} autoPlay />
-      )}
-    </>
+  return media.type === "image" ? (
+    <img
+      className={classes.media}
+      style={{ visibility: visible ? "visible" : "hidden" }}
+      src={downloadURL}
+      alt={media.name}
+    />
+  ) : (
+    <video
+      className={classes.media}
+      style={{ visibility: visible ? "visible" : "hidden" }}
+      src={downloadURL}
+      autoPlay
+    />
   );
 };
 

@@ -1,8 +1,9 @@
 import * as functions from "firebase-functions";
 import * as path from "path";
+import { createClientToken, validateClientId } from "./auth";
 import { initialize, getAvailableDates, exportCurrentBakalari } from "./baka";
 import { bakaSuplDatesRoute, bakaPlanDatesRoute } from "./constants";
-import { app, firestore, userExists } from "./fire";
+import { firestore, userExists } from "./fire";
 import { processMedia } from "./utils";
 
 export const onBakalariConfigurationCreate = functions
@@ -69,27 +70,14 @@ export const availableBakaPlanDates = createAvailableDatesHandler(
 
 export const isAuthorized = functions
   .region("europe-west3")
-  .https.onRequest((request, response) => {
+  .https.onRequest(async (request, response) => {
     const uid = request.headers["uid"];
-    response.send(uid && typeof uid === "string" && userExists(uid));
+    const authorized =
+      uid && typeof uid === "string" && (await userExists(uid));
+    response.send(authorized);
   });
 
-export const clientAccess = functions
-  .region("europe-west3")
-  .https.onRequest(async (request, response) => {
-    const clientId = request.query.clientId + "";
-    const { exists } = await firestore
-      .collection("clients")
-      .doc(clientId)
-      .get();
-    response.set("Access-Control-Allow-Origin", "*");
-    if (!exists) {
-      response.status(500).send("Invalid client ID");
-    } else {
-      const token = await app.auth().createCustomToken(clientId);
-      response.send(token);
-    }
-  });
+// Ready stuff beneath
 
 export const onClientStatusChanged = functions
   .region("europe-west3")
@@ -104,4 +92,18 @@ export const onClientStatusChanged = functions
     return status.last_changed > eventStatus.last_changed
       ? null
       : userStatusFirestoreRef.update({ status: eventStatus.state });
+  });
+
+export const generateClientToken = functions
+  .region("europe-west3")
+  .https.onRequest(async (request, response) => {
+    const clientId = request.query.clientId + "";
+    const isValid = await validateClientId(clientId);
+    response.set("Access-Control-Allow-Origin", "*");
+    if (!isValid) {
+      response.status(500).send("Invalid client ID");
+    } else {
+      const token = await createClientToken(clientId);
+      response.send(token);
+    }
   });

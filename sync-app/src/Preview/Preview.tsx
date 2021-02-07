@@ -1,66 +1,53 @@
-import { Box, Icon, IconButton, Modal } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import { Box } from "@material-ui/core";
+import React from "react";
 import { useSelector } from "react-redux";
-import Tooltip from "../components/Tooltip";
+import Overlay from "./Overlay";
 import { MediaModel } from "../definitions";
 import { RootState } from "../store";
-import MediaPreview from "./MediaPreview";
+import ProgressBar from "./ProgressBar";
+import { PreviewState } from "../store/slices/preview";
+import PlayNextPrevious from "./PlayNext";
+import CloseModalPreview from "./CloseModalPreview";
+import MediaPreviewPlayer from "./MediaPreviewPlayer";
 
 interface Props {
-  mediaIds: string[];
-  onClose?: () => void;
+  disableControls?: boolean;
 }
 
-const Preview: React.FC<Props> = ({ mediaIds, onClose }) => {
+const Preview: React.FC<Props> = ({ disableControls }) => {
+  const { activeMediaIndex, previewMediaList } = useSelector<
+    RootState,
+    PreviewState
+  >((state) => state.preview);
   const mediaList = useSelector<RootState, MediaModel[]>((state) =>
-    mediaIds.map((id) => ({
-      ...state.firestore.data.media[id],
-      id,
-    }))
+    previewMediaList.map((id) => state.firestore.data.media[id])
   );
-  const [activeMedia, setActiveMedia] = useState(0);
-  useEffect(() => setActiveMedia(0), [mediaIds, setActiveMedia]);
-  const handleMediaEnded = () => {
-    const nextIndex = activeMedia + 1;
-    setActiveMedia(!mediaList[nextIndex] ? 0 : nextIndex);
-  };
-  const media = mediaList[activeMedia];
-  if (!media) {
-    return null;
-  }
-  return (
-    <Modal open={Boolean(mediaList.length)} onClose={onClose}>
-      <Box
-        width={1}
-        height={1}
-        style={{
-          backgroundColor: "rgba(0, 0, 0, 0.8)"
-        }}
-        onClick={onClose}
-      >
-        <Box
-          style={{
-            margin: "auto",
-            position: "relative",
-            backgroundColor: "white",
-            height: window.screen.availHeight * 0.9,
-            width: window.screen.availHeight * 0.9 * 0.5625,
-          }}
-        >
-          {onClose && (
-            <Tooltip title="Close this preview">
-              <IconButton
-                style={{ position: "absolute", right: 8, top: 8, zIndex: 9999 }}
-                onClick={onClose}
-              >
-                <Icon>close</Icon>
-              </IconButton>
-            </Tooltip>
-          )}
-          <MediaPreview media={media} onMediaEnd={handleMediaEnded} />
-        </Box>
+  const media = mediaList[activeMediaIndex];
+  return !media ? null : (
+    <Box
+      style={{
+        height: window.innerHeight,
+        width: window.innerHeight * 0.5625,
+        padding: disableControls ? 0 : 32,
+        margin: "auto",
+        boxSizing: "border-box",
+        color: "#e6e6e6",
+      }}
+    >
+      <Box height={1} position="relative" bgcolor="rgba(20, 20, 20, 0.95)">
+        <ProgressBar />
+        {!disableControls && <CloseModalPreview />}
+        {!disableControls && previewMediaList.length !== 1 && (
+          <>
+            <PlayNextPrevious type="previous" />
+            <PlayNextPrevious type="next" />
+          </>
+        )}
+        <MediaPreviewPlayer />
+        <Overlay position="bottom" />
       </Box>
-    </Modal>
+    </Box>
   );
 };
+
 export default Preview;

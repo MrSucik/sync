@@ -15,8 +15,11 @@ export const useAuthorization = () => {
   const auth = useSelector<RootState, FirebaseReducer.AuthState>(
     (state) => state.firebase.auth
   );
-  const { push } = useHistory();
+  const { push, location } = useHistory();
   useEffect(() => {
+    if (location.pathname.startsWith("/preview")) {
+      return;
+    }
     if (auth.isEmpty) {
       push("/auth");
       dispatch(setAuthorized(false));

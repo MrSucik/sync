@@ -3,7 +3,8 @@ import { useDispatch } from "react-redux";
 import { useFirestore } from "react-redux-firebase";
 import CardHeader from "../components/CardHeader";
 import { Scene } from "../definitions";
-import { setChoosingMedia, setPreviewMediaList } from "../store/slices/app";
+import { setChoosingMedia } from "../store/slices/app";
+import { setPreviewMediaList } from "../store/slices/preview";
 import { useScenesWithChildren } from "./useScenesWithChildren";
 
 const useValidation = () => {
@@ -52,7 +53,7 @@ const SceneHeader: React.FC<Props> = ({ scene }) => {
   };
   const handlePreviewClick = (mediaList: string[]) => {
     if (validatePrePreview(mediaList)) {
-      dispatch(setPreviewMediaList(mediaList));
+      dispatch(setPreviewMediaList({ mediaList, type: "modal" }));
     }
   };
   const handleDeleteClick = async (id: string) => {

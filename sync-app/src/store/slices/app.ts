@@ -12,7 +12,6 @@ export interface AppState {
   choosingScene: string | null;
   choosingMedia: string | null;
   optimisticReorderUpdate: ReorderUpdate | null;
-  previewMediaList: string[];
 }
 
 const initialState: AppState = {
@@ -20,7 +19,6 @@ const initialState: AppState = {
   choosingScene: null,
   choosingMedia: null,
   optimisticReorderUpdate: null,
-  previewMediaList: [],
 };
 
 const appSlice = createSlice({
@@ -42,9 +40,6 @@ const appSlice = createSlice({
     ) {
       state.optimisticReorderUpdate = action.payload;
     },
-    setPreviewMediaList(state, action: PayloadAction<string[]>) {
-      state.previewMediaList = action.payload;
-    },
   },
 });
 
@@ -53,7 +48,6 @@ export const {
   setChoosingScene,
   setChoosingMedia,
   setOptimisticReorderUpdate,
-  setPreviewMediaList,
 } = appSlice.actions;
 
 export default appSlice.reducer;

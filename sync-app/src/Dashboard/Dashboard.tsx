@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 import Container from "./Container";
 import { useFirestoreSubscribe } from "../hooks/useFirestoreSubscribe";
 import UsersModal from "../Users/UsersModal";
-import ScenePreview from "../Preview/ScenePreview";
+import ModalPreview from "../Preview/ModalPreview";
 
 const Dashboard = () => {
   const dataLoaded = useFirestoreSubscribe();
@@ -15,7 +15,7 @@ const Dashboard = () => {
   return dataLoaded ? (
     <>
       <UsersModal />
-      <ScenePreview />
+      <ModalPreview />
       <Header />
       <Container>
         <Media />

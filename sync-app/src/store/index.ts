@@ -20,6 +20,7 @@ import appReducer, { AppState } from "./slices/app";
 import mediaReducer, { MediaState } from "./slices/media";
 import settingsReducer, { SettingsState } from "./slices/settings";
 import authReducer, { AuthState } from "./slices/auth";
+import previewReducer, { PreviewState } from "./slices/preview";
 
 const rootReducer = combineReducers({
   firestore: firestoreReducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   media: mediaReducer,
   settings: settingsReducer,
   auth: authReducer,
+  preview: previewReducer,
 });
 
 const middleware = getDefaultMiddleware({
@@ -58,6 +60,7 @@ export type RootState = CombinedState<{
   auth: AuthState;
   settings: SettingsState;
   media: MediaState;
+  preview: PreviewState;
 }>;
 
 export default store;

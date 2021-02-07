@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import superagent from "superagent";
 import { RootState } from "../../store";
 import { ConfigureMediaModalState } from "../../store/slices/media";
+import client from "../../utils/client";
 
 const endpoints = {
-  "bakalari-suplovani":
-    "https://europe-west3-wigymtv.cloudfunctions.net/availableBakaSuplDates",
-  "bakalari-plan-akci":
-    "https://europe-west3-wigymtv.cloudfunctions.net/availableBakaPlanDates",
+  "bakalari-suplovani": client.bakalariSuplovaniDates,
+  "bakalari-plan-akci": client.bakalariPlanAkciDates,
 };
 
 export const useAvailableDates = () => {
@@ -18,9 +16,7 @@ export const useAvailableDates = () => {
   const [dates, setDates] = useState<string[]>([]);
   useEffect(() => {
     if (type !== "closed") {
-      superagent
-        .get(endpoints[type])
-        .then((response) => setDates(response.body));
+      endpoints[type]().then((response) => setDates(response.data));
     }
   }, [type]);
   return dates;
